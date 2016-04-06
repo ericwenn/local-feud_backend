@@ -42,3 +42,20 @@ None.
 
 	}
 
+
+
+
+
+
+# POST
+Send `Message` to `Chat` specified by `:id`
+
+## Parameters
+* `content`: String (required)
+
+## Return
+
+### 200 - Success
+	{
+		"status": 200
+	}
