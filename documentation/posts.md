@@ -46,6 +46,7 @@ Get an array of `Post` objects.
 
 
 ## POST
+Create new `Post` object.
 
 ### Parameters
 * `latitude`: 		Float 						(required)
