@@ -34,7 +34,7 @@ Get an array of `Post` objects.
 			"number_of_comments": Integer,
 			"number_of_likes": Integer,
 			"date_posted": Date
-			"href": URL
+			"href": URL,
 		},
 		...
 	]
