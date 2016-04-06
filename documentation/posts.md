@@ -4,7 +4,7 @@ Get an array of `Post` objects.
 
 ### Parameters
 * latitude: `Float` (required)
-* longitde: `Float` (required)
+* longitude: `Float` (required)
 * radius: `Integer`
 * order: `String`
 
