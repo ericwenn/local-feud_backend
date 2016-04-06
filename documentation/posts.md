@@ -52,7 +52,7 @@ Create new `Post` object.
 * `latitude`: 		Float 						(required)
 * `longitude`: 		Float 						(required)
 
-* `content_type`: 	String [ 'image'/'text']  	(required)
+* `content_type`: 	String ('image'/'text')  	(required)
 * `text`: 			String 						(required if `content_type == 'text'`)
 * `image`:			**TODO**
 
