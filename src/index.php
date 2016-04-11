@@ -10,6 +10,9 @@
 
 
     include("config.php");
-    include("endpoints/posts/archive.php");
 
+    include("endpoints/posts/archive.php");
+    include("endpoints/posts/single.php");
+
+    
     $app->run();
