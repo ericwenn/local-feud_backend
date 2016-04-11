@@ -9,4 +9,3 @@
     $app = new App($container);
 
 
-    print_r($app);
