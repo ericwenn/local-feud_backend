@@ -9,3 +9,9 @@
     $app = new App($container);
 
 
+    $app->get('/', function( $req, $res, $args) {
+    });
+
+    include("endpoints/posts/archive.php");
+
+    $app->run();
