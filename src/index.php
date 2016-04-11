@@ -1,4 +1,11 @@
 <?php
     namespace LocalFeud;
+    use Slim\App;
+    use Slim\Container;
 
-    phpinfo();
+    require_once "../vendor/autoload.php";
+
+    $container = new Container;
+    $app = new App($container);
+
+
