@@ -60,4 +60,4 @@ $app->get('/posts/{id}/', function( $req, $res, $args) {
     );
 
     return $newRes;
-});
+})->setName('post');

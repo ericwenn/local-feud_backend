@@ -1,4 +1,5 @@
 <?php
+    namespace LocalFeud;
 /**
  * @api {get} /posts/ List of Posts
  * @apiName GetPosts
@@ -26,12 +27,91 @@
  * @apiSuccess {String}		posts.href				    Reference to the endpoint
  */
 
-	$app->get('/posts/', function( $req, $res, $args) {
+	use DateTime;
 
-        
-        
-        $date = new DateTime('now');
+    $app->get('/posts/', function($req, $res, $args ) {
 
+        // Get-parameters not added yet. These points *should* be in Gothenburg.
+        $fake_latitude = 52.23123;
+        $fake_longitude = 11.123123;
+
+        $requestLocation = new Helpers\Location($fake_latitude, $fake_longitude);
+
+
+        $posts = \QB::table('posts');
+
+        // Joining to post_commentators, which holds the name for everyone connected to this post.
+        $posts->leftJoin('post_commentators', 'posts.id', '=', 'post_commentators.postid');
+
+
+        $posts->select( array(
+            \QB::raw('posts.id'),
+            \QB::raw('posts.reach'),
+            \QB::raw('posts.date_posted'),
+            \QB::raw('posts.authorid'),
+            \QB::raw('posts.latitude'),
+            \QB::raw('posts.longitude'),
+
+        ));
+
+
+        try {
+            // echo $posts->getQuery()->getRawSql();
+            $responseData = $posts->get();
+        } catch(Exception $e) {
+
+            // TODO Fix this error handling
+            echo $e->getMessage();
+        }
+
+
+        foreach ($responseData as $post) {
+
+            // Calculating distance and formatting this output
+            $post_location = new Helpers\Location($post->latitude, $post->longitude);
+
+            $distance = $post_location->distanceTo($requestLocation);
+
+            $post->location = array(
+                'distance' => $distance
+            );
+            unset($post->longitude);
+            unset($post->latitude);
+
+
+            // Formatting all date-types.
+            $d = new DateTime($post->date_posted);
+
+            $post->date_posted = $d->format('c');
+            // Formatting the user-object
+            $user = array(
+                'id' => $post->authorid,
+                'href' => $this->get('router')->pathFor('user', [
+                    'id' => $post->authorid
+                ])
+            );
+            $post->user = $user;
+            unset($post->authorid);
+
+
+            // Data not yet implemented
+            $post->number_of_comments = 4;
+            $post->number_of_likes = 10;
+
+            $post->content = array(
+                'type' => 'text',
+                'text' => 'Lorem ipsum'
+            );
+
+            $post->href = $this->get('router')->pathFor('post', [
+                'id' => $post->id
+            ]);
+
+
+        }
+
+        /**
+        $date = new Date();
         $dummyResponse = array(
             array(
                 'id' => 1,
@@ -76,11 +156,11 @@
                 'href' => API_ROOT_URL . '/posts/2/'
             )
         );
-
+        */
 
         $newRes = $res->withJson(
-           $dummyResponse
+           $responseData
         );
 
         return $newRes;
-    });
+    })->setName('posts');

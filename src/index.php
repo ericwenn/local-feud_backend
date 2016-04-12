@@ -10,8 +10,7 @@
     $container = new Container;
     $app = new App($container);
 
-//    new \Pixie\Connection('mysql', $PIXIE_CONFIG, 'QB');
-
+    $connection = new \Pixie\Connection('mysql', $PIXIE_CONFIG, 'QB');
 
 
 
@@ -23,6 +22,9 @@
 
     include("endpoints/chats/archive.php");
     include("endpoints/chats/single.php");
+
+    include("endpoints/users/archive.php");
+    include("endpoints/users/single.php");
 
 
     $app->run();
