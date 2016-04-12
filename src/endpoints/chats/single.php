@@ -38,26 +38,6 @@ $app->get('/chats/{id}/', function( $req, $res, $args) {
 
                 )
             )
-        ),
-        array(
-            'id' => 2,
-            'users' => array(
-                array(
-                    'id' => 1,
-                    'firstname' => 'Karl',
-                    'lastname' => 'Karlsson',
-                    'href' => API_ROOT_URL . '/users/1/'
-                ),
-                array(
-                    'id' => 2,
-                    'firstname' => 'Johan',
-                    'lastname' => 'Ulvgren',
-                    'href' => API_ROOT_URL . '/users/2/'
-                )
-            ),
-            'status' => 'accepted',
-            'date_started' => $date->format('c'),
-            'number_of_unread_messages' => 2,
         )
     );
 
