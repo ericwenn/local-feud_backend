@@ -10,7 +10,7 @@
     $container = new Container;
     $app = new App($container);
 
-    new \Pixie\Connection('mysql', $PIXIE_CONFIG, 'QB');
+//    new \Pixie\Connection('mysql', $PIXIE_CONFIG, 'QB');
 
 
 
