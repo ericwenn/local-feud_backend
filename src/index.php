@@ -13,6 +13,9 @@
 
     include("endpoints/posts/archive.php");
     include("endpoints/posts/single.php");
+    include("endpoints/posts/single-comments.php");
+    include("endpoints/posts/single-likes.php");
 
-    
+    include("endpoints/chats/archive.php");
+    include("endpoints/chats/single.php");
     $app->run();
