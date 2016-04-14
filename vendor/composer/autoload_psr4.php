@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'Slim\\HttpCache\\' => array($vendorDir . '/slim/http-cache/src'),
     'Slim\\' => array($vendorDir . '/slim/slim/Slim'),
+    'Respect\\Validation\\' => array($vendorDir . '/respect/validation/library'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
     'LocalFeud\\' => array($baseDir . '/src'),
     'Interop\\Container\\' => array($vendorDir . '/container-interop/container-interop/src/Interop/Container'),

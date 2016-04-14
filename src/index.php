@@ -3,6 +3,8 @@
     use Pixie\QueryBuilder;
     use Slim\App;
     use Slim\Container;
+    use Slim\Http\Request;
+    use Slim\Http\Response;
 
     require_once "../vendor/autoload.php";
     include("config.php");
@@ -15,6 +17,29 @@
         $qb = new \Pixie\QueryBuilder\QueryBuilderHandler($connection);
 
         return $qb;
+    };
+
+
+    $container['errorHandler'] = function($c) {
+        return function( Request $req, Response $res, \Exception $e) {
+
+            if( $e instanceof Exceptions\Exception ) {
+                return $res->
+                withStatus( $e->getCode() )->
+                withJson(
+                    array(
+                        'status' => $e->getCode(),
+                        'message' => $e->getMessage()
+                    )
+                );
+
+            } else {
+                return $res->
+                    withStatus(500)->withJson(array(
+                    'message' => $e->getMessage()
+                ));
+            }
+        };
     };
     $app = new App($container);
 
