@@ -28,8 +28,17 @@
  */
 
 	use DateTime;
+    use LocalFeud\Exceptions\BadRequestException;
+    use LocalFeud\Exceptions\UnauthorizedException;
+    use Pixie\Exception;
+    use Pixie\QueryBuilder\QueryBuilderHandler;
+    use Psr\Http\Message\ResponseInterface;
+    use Respect\Validation\Validator;
+    use Slim\Exception\SlimException;
+    use Slim\Http\Request;
+    use Slim\Http\Response;
 
-    $app->get('/posts/', function($req, $res, $args ) {
+    $app->get('/posts/', function($req, Response $res, $args ) {
 
         /** @var \Pixie\QueryBuilder\QueryBuilderHandler $queryBuilder */
         $queryBuilder = $this->querybuilder;
@@ -54,6 +63,8 @@
             $queryBuilder->raw('posts.authorid'),
             $queryBuilder->raw('posts.latitude'),
             $queryBuilder->raw('posts.longitude'),
+            $queryBuilder->raw('posts.content_type'),
+            $queryBuilder->raw('posts.text')
 
         ));
 
@@ -101,10 +112,14 @@
             $post->number_of_comments = 4;
             $post->number_of_likes = 10;
 
-            $post->content = array(
-                'type' => 'text',
-                'text' => 'Lorem ipsum'
-            );
+            if( $post->content_type == 'text') {
+                $post->content = array(
+                    'type' => 'text',
+                    'text' => $post->text
+                );
+                unset($post->content_type);
+                unset($post->text);
+            }
 
             $post->href = $this->get('router')->pathFor('post', [
                 'id' => $post->id
@@ -167,3 +182,84 @@
 
         return $newRes;
     })->setName('posts');
+
+
+
+
+    $app->post('/posts/', function( Request $req, Response $res, $args) {
+
+        $post = $req->getParsedBody();
+
+
+        // Validate latitude
+        if( !isset($post['latitude']) ) {
+            throw new BadRequestException('Latitude not set');
+        }
+        if(!Validator::floatType()->between(-90, 90)->validate( $post['latitude'] )) {
+            throw new BadRequestException('Latitude malformed or out of range');
+        }
+
+
+
+
+        // Validate longitude
+        if( !isset($post['longitude']) ) {
+            throw new BadRequestException('Longitude not set');
+        }
+        if( !Validator::floatType()->between(0,180)->validate($post['longitude'] )) {
+            throw new BadRequestException('Longitude malformed or out of range');
+        }
+
+
+
+
+
+        // Validate content type
+        if( !isset($post['content_type'])) {
+            throw new BadRequestException('Content type not set');
+        }
+
+        $allowedContentTypes = [ 'text' ];
+        if( !in_array($post['content_type'], $allowedContentTypes)) {
+            throw new BadRequestException('Content type not recognized');
+        }
+
+
+
+
+
+        // Validate content
+
+        if( $post['content_type'] == 'text') {
+
+            if( !isset($post['text'])) {
+                throw new BadRequestException('Text not set');
+            }
+
+            if( !Validator::length(0,255)->validate( $post['text'])) {
+                throw new BadRequestException('Text exceeds max limit of 255 characters');
+            }
+
+
+        }
+
+
+        /** @var QueryBuilderHandler $qb */
+        $qb = $this->querybuilder;
+
+        // TODO Use authenticated users ID instead
+        $userID = 1;
+
+
+        $post['authorID'] = $userID;
+        $qb->table('posts')->insert($post);
+
+        return $res->withStatus(200)->withJson(
+            array(
+                'status' => 200
+            )
+        );
+
+
+
+    });
