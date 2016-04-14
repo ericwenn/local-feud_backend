@@ -170,3 +170,7 @@ dist/
 nbdist/
 nbactions.xml
 .nb-gradle/
+
+
+
+config.php
