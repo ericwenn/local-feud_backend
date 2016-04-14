@@ -31,6 +31,9 @@
 
     $app->get('/posts/', function($req, $res, $args ) {
 
+        /** @var \Pixie\QueryBuilder\QueryBuilderHandler $queryBuilder */
+        $queryBuilder = $this->querybuilder;
+
         // Get-parameters not added yet. These points *should* be in Gothenburg.
         $fake_latitude = 52.23123;
         $fake_longitude = 11.123123;
@@ -38,19 +41,19 @@
         $requestLocation = new Helpers\Location($fake_latitude, $fake_longitude);
 
 
-        $posts = \QB::table('posts');
+        $posts = $queryBuilder->table('posts');
 
         // Joining to post_commentators, which holds the name for everyone connected to this post.
         $posts->leftJoin('post_commentators', 'posts.id', '=', 'post_commentators.postid');
 
 
         $posts->select( array(
-            \QB::raw('posts.id'),
-            \QB::raw('posts.reach'),
-            \QB::raw('posts.date_posted'),
-            \QB::raw('posts.authorid'),
-            \QB::raw('posts.latitude'),
-            \QB::raw('posts.longitude'),
+            $queryBuilder->raw('posts.id'),
+            $queryBuilder->raw('posts.reach'),
+            $queryBuilder->raw('posts.date_posted'),
+            $queryBuilder->raw('posts.authorid'),
+            $queryBuilder->raw('posts.latitude'),
+            $queryBuilder->raw('posts.longitude'),
 
         ));
 

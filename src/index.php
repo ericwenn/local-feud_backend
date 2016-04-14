@@ -7,11 +7,16 @@
     require_once "../vendor/autoload.php";
     include("config.php");
 
+
+
     $container = new Container;
+    $container['querybuilder'] = function($c) use($PIXIE_CONFIG) {
+        $connection = new \Pixie\Connection('mysql', $PIXIE_CONFIG);
+        $qb = new \Pixie\QueryBuilder\QueryBuilderHandler($connection);
+
+        return $qb;
+    };
     $app = new App($container);
-
-    $connection = new \Pixie\Connection('mysql', $PIXIE_CONFIG, 'QB');
-
 
 
 
