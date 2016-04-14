@@ -34,10 +34,12 @@
     use Pixie\QueryBuilder\QueryBuilderHandler;
     use Psr\Http\Message\ResponseInterface;
     use Respect\Validation\Validator;
+    use Slim\App;
     use Slim\Exception\SlimException;
     use Slim\Http\Request;
     use Slim\Http\Response;
 
+    /** @var App $app */
     $app->get('/posts/', function($req, Response $res, $args ) {
 
         /** @var \Pixie\QueryBuilder\QueryBuilderHandler $queryBuilder */
@@ -182,7 +184,6 @@
 
         return $newRes;
     })->setName('posts');
-
 
 
 
