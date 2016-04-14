@@ -26,5 +26,4 @@
     include("endpoints/users/archive.php");
     include("endpoints/users/single.php");
 
-
     $app->run();

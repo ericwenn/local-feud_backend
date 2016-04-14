@@ -164,3 +164,27 @@
 
         return $newRes;
     })->setName('posts');
+	
+	$app->post('/posts.php', function($req, $res, $args ) {
+		
+		$postpost = \QB::table('posts');
+		
+		$argstopost = $request->getParsedBody();
+
+        $insert = array(
+           'reach' -> $argstopost['reach'],
+           'authorid' -> $argstopost['authorid'],
+           'latitude' ->  $argstopost['latitude'],
+           'longitude' ->  $argstopost['longitude']
+        );
+
+        try
+		{
+            $responseData = $postpost->insert($insert);
+        }
+		catch(Exception $e)
+		{
+            echo $e->getMessage();
+        }
+		
+	}->setName('posts');
