@@ -3,6 +3,9 @@
  * @api {get} /posts/[id]/likes/ Likes on a Post
  * @apiGroup Posts
  *
+ * @apiIgnore
+ *
+ * 
  * @apiSuccess {Object[]}	likes 					    The Likes
  * @apiSuccess {Number} 	likes.id 				    ID of the Like
  * @apiSuccess {Date}		posts.date_liked    	    Date when the Post was liked

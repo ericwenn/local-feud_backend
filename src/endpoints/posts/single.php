@@ -4,6 +4,8 @@
  * @apiName GetPost
  * @apiGroup Posts
  *
+ * @apiIgnore
+ *
  * @apiSuccess {Number} 	id 				        ID of the Post
  * @apiSuccess {Number}	    reach				    Reach of the Post, measured in kilometers
  * @apiSuccess {Date}		date_posted		        Date when the Post was created

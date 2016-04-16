@@ -1,0 +1,24 @@
+<?php
+/**
+ * @apiDefine Unauthorized Request was not authorized to do this action.
+ *
+ * @apiErrorExample Error-Response: Unauthorized
+ *      HTTP/1.1 401 Unauthorized
+ *      {
+ *          "status": 401,
+ *          "message": "Unauthorized Request"
+ *      }
+ */
+
+
+
+/**
+ * @apiDefine BadRequest Parameters missing or malformed
+ *
+ * @apiErrorExample Error-Response: Bad Request
+ *      HTTP/1.1 400 Bad Request
+ *      {
+ *          "status": 400,
+ *          "message": "Parameters missing or malformed"
+ *      }
+ */

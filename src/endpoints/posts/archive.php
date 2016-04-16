@@ -3,7 +3,18 @@
 /**
  * @api {get} /posts/ List of Posts
  * @apiName GetPosts
- * @apiGroup Posts
+ * @apiGroup Post
+ *
+ *
+ * @apiParam {Number{-90 - 90}} latitude                         The latitude of centerpoint which the posts will be around
+ * @apiParam {Number{0 - 180}} longitude                         The longitude of centerpoint which the posts will be around
+ *
+ *
+ * @apiParamExample {json} Request-Example
+ *      {
+ *          "latitude": 52.123123,
+ *          "longitude": 11.123123,
+ *      }
  *
  * @apiSuccess {Object[]}	posts 					    The Posts
  * @apiSuccess {Number} 	posts.id 				    ID of the Post
@@ -25,17 +36,18 @@
  * @apiSuccess {Number}		posts.location.distance     Number between 0 and 10 denoting the distance from the post
  *
  * @apiSuccess {String}		posts.href				    Reference to the endpoint
+ *
+ *
+ *
+ * @apiUse Unauthorized
  */
 
 	use DateTime;
     use LocalFeud\Exceptions\BadRequestException;
-    use LocalFeud\Exceptions\UnauthorizedException;
     use Pixie\Exception;
     use Pixie\QueryBuilder\QueryBuilderHandler;
-    use Psr\Http\Message\ResponseInterface;
     use Respect\Validation\Validator;
     use Slim\App;
-    use Slim\Exception\SlimException;
     use Slim\Http\Request;
     use Slim\Http\Response;
 
@@ -130,60 +142,46 @@
 
         }
 
-        /**
-        $date = new Date();
-        $dummyResponse = array(
-            array(
-                'id' => 1,
-                'location' => array(
-                    'distance' => 5
-                ),
-                'user' => array(
-                    'id' => 1,
-                    'firstname' => 'Karl',
-                    'lastname' => 'Karlsson',
-                    'href' => API_ROOT_URL . '/users/1/'
-                ),
-                'reach' => 5,
-                'content' => array(
-                    'type' => 'text',
-                    'text' => 'Lorem ipsum dolorem.'
-                ),
-                'number_of_comments' => 10,
-                'number_of_likes' => 20,
-                'date_posted' => $date->format('c'),
-                'href' => API_ROOT_URL . '/posts/1/'
-            ),
-            array(
-                'id' => 2,
-                'location' => array(
-                    'distance' => 7
-                ),
-                'user' => array(
-                    'id' => 2,
-                    'firstname' => 'Krune',
-                    'lastname' => 'Nilsson',
-                    'href' => API_ROOT_URL . '/users/2/'
-                ),
-                'reach' => 5,
-                'content' => array(
-                    'type' => 'text',
-                    'text' => 'Lorem ipsum dolorem.'
-                ),
-                'number_of_comments' => 10,
-                'number_of_likes' => 20,
-                'date_posted' => $date->format('c'),
-                'href' => API_ROOT_URL . '/posts/2/'
-            )
-        );
-        */
 
         $newRes = $res->withJson(
-           $responseData
+           $responseData, null, JSON_NUMERIC_CHECK
         );
 
         return $newRes;
     })->setName('posts');
+
+
+
+
+
+
+
+
+
+    /**
+     * @api {get} /posts/ Create post
+     * @apiName CreatePost
+     * @apiGroup Post
+     *
+     * @apiParam {Number{-90 - 90}} latitude                            Latitude of the post to insert
+     * @apiParam {Number{0 - 180}} longitude                            Longitude of the post to insert
+     * @apiParam {String="text"} content_type ="text"                   The type of the content
+     * @apiParam {String{..255}} [text]                                 If `content_type==text` this is mandatory.
+     *
+     * @apiParamExample {json} Request-Example
+     *      {
+     *          "latitude": 52.123123,
+     *          "longitude": 11.123123,
+     *          "content_type": "text",
+     *          "text": "Lorem ipsum dolorem."
+     *      }
+     *
+     *
+     * @apiUse Unauthorized
+     * @apiUse BadRequest
+     */
+
+
 
 
 
