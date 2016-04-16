@@ -464,5 +464,56 @@
             "validation",
             "validator"
         ]
+    },
+    {
+        "name": "nubs/random-name-generator",
+        "version": "v1.0.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/nubs/random-name-generator.git",
+            "reference": "965ddd74b099750c6781ee614ae250365815ae06"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/nubs/random-name-generator/zipball/965ddd74b099750c6781ee614ae250365815ae06",
+            "reference": "965ddd74b099750c6781ee614ae250365815ae06",
+            "shasum": ""
+        },
+        "require": {
+            "php": "~5.5 || ~7.0"
+        },
+        "require-dev": {
+            "cinam/randomizer": ">=1.1.1,<2.0",
+            "phpunit/phpunit": "~4.0",
+            "satooshi/php-coveralls": "~0.7.0",
+            "squizlabs/php_codesniffer": "~2.3"
+        },
+        "time": "2016-01-12 18:48:05",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Nubs\\RandomNameGenerator\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Spencer Rinehart",
+                "email": "anubis@overthemonkey.com",
+                "role": "Developer"
+            }
+        ],
+        "description": "A library to create interesting, sometimes entertaining, random names.",
+        "keywords": [
+            "alliteration",
+            "generator",
+            "random",
+            "video game"
+        ]
     }
 ]

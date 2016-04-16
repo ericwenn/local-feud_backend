@@ -50,11 +50,21 @@ $app->get('/posts/{id}/', function( \Slim\Http\Request $req, \Slim\Http\Response
 
     $post = $qb->table('posts');
 
-    $post->where('id', '=', $args['id']);
+    $post->where('posts.id', '=', $args['id']);
+
+
+    // Join on post_commentators to get ficitional name of the author
+    $post->leftJoin('post_commentators', function(\Pixie\QueryBuilder\JoinBuilder $table) {
+        $table->on('posts.id', '=', 'post_commentators.postid');
+        $table->on('posts.authorid', '=', 'post_commentators.userid');
+    });
+
 
     $post->select( [
-        'id',
+        'posts.id',
         'authorid',
+        'post_commentators.firstname',
+        'post_commentators.lastname',
         'reach',
         'is_deleted',
         'latitude',
@@ -64,6 +74,7 @@ $app->get('/posts/{id}/', function( \Slim\Http\Request $req, \Slim\Http\Response
         'text',
         'image_src'
     ]);
+
 
     $responseData = $post->get();
 
@@ -77,8 +88,32 @@ $app->get('/posts/{id}/', function( \Slim\Http\Request $req, \Slim\Http\Response
 
 
     // Format User
+
+    // If no name is generator for the user yet, generate one and insert it to database.
+    if( $responseData->firstname == null && $responseData->lastname == null) {
+        $generator = new \Nubs\RandomNameGenerator\Alliteration();
+        $full_name = explode(' ', $generator->getName());
+
+        $firstname = $full_name[0];
+        $lastname = $full_name[1];
+
+        $names = $qb->table('post_commentators');
+
+        $names->insert( [
+            'postid' => $responseData->id,
+            'userid' => $responseData->authorid,
+            'firstname' => $firstname,
+            'lastname' => $lastname
+        ]);
+
+        $responseData->firstname = $firstname;
+        $responseData->lastname = $lastname;
+    }
+
     $user = [
         'id' => $responseData->authorid,
+        'firstname' => $responseData->firstname,
+        'lastname' => $responseData->lastname,
         'href' => $this->get('router')->pathFor('user', [
             'id' => $responseData->authorid
         ])
@@ -86,6 +121,10 @@ $app->get('/posts/{id}/', function( \Slim\Http\Request $req, \Slim\Http\Response
 
     $responseData->user = $user;
     unset($responseData->authorid);
+    unset($responseData->firstname);
+    unset($responseData->lastname);
+
+
 
 
 
