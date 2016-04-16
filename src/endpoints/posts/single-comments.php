@@ -38,4 +38,4 @@
         );
 
         return $newRes;
-    });
+    })->setName('postComments');

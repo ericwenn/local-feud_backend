@@ -54,4 +54,4 @@
         );
 
         return $newRes;
-    });
+    })->setName('postLikes');

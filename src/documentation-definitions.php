@@ -22,3 +22,18 @@
  *          "message": "Parameters missing or malformed"
  *      }
  */
+
+
+
+
+
+/**
+ * @apiDefine NotFound Resource not found
+ *
+ * @apiErrorExample Error-Response: Not Found
+ *      HTTP/1.1 404 Not Found
+ *      {
+ *          "status": 404,
+ *          "message": "Resource not found"
+ *      }
+ */

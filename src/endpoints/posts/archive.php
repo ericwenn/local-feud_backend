@@ -111,6 +111,8 @@
             $d = new DateTime($post->date_posted);
 
             $post->date_posted = $d->format('c');
+            
+            
             // Formatting the user-object
             $user = array(
                 'id' => $post->authorid,
@@ -122,10 +124,18 @@
             unset($post->authorid);
 
 
-            // Data not yet implemented
+
+
+
+            // TODO Data not yet implemented
             $post->number_of_comments = 4;
             $post->number_of_likes = 10;
 
+
+
+
+
+            // Format content
             if( $post->content_type == 'text') {
                 $post->content = array(
                     'type' => 'text',
