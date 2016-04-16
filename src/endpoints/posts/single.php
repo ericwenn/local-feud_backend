@@ -28,7 +28,7 @@
  *
  */
 
-$app->get('/posts/{id}/', function( $req, $res, $args) {
+$app->get('/posts/{id}/', function( \Slim\Http\Request $req, \Slim\Http\Response $res, $args) {
 
     $date = new DateTime('now');
 
