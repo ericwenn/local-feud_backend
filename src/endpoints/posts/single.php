@@ -91,20 +91,10 @@ $app->get('/posts/{id}/', function( \Slim\Http\Request $req, \Slim\Http\Response
 
     // If no name is generator for the user yet, generate one and insert it to database.
     if( $responseData->firstname == null && $responseData->lastname == null) {
-        $generator = new \Nubs\RandomNameGenerator\Alliteration();
-        $full_name = explode(' ', $generator->getName());
 
-        $firstname = $full_name[0];
-        $lastname = $full_name[1];
+        \LocalFeud\Helpers\NameGenerator::setQB( $qb );
+        list( $firstname, $lastname ) = \LocalFeud\Helpers\NameGenerator::generate($responseData->id, $responseData->authorid);
 
-        $names = $qb->table('post_commentators');
-
-        $names->insert( [
-            'postid' => $responseData->id,
-            'userid' => $responseData->authorid,
-            'firstname' => $firstname,
-            'lastname' => $lastname
-        ]);
 
         $responseData->firstname = $firstname;
         $responseData->lastname = $lastname;

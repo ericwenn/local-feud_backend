@@ -1,56 +1,108 @@
 <?php
 /**
- * @api {get} /posts/[id]/likes/ Likes on a Post
- * @apiGroup Posts
+ * @api {get} /posts/:id/likes/ Likes on a Post
+ * @apiGroup Post
  *
  * @apiIgnore
- *
+ * @apiParam {Number}       id
  * 
  * @apiSuccess {Object[]}	likes 					    The Likes
- * @apiSuccess {Number} 	likes.id 				    ID of the Like
- * @apiSuccess {Date}		posts.date_liked    	    Date when the Post was liked
- * @apiSuccess {Number}	    posts.is_original_poster    If the User is also the Author of the Post
+ * @apiSuccess {Date}		likes.date_liked    	    Date when the Post was liked
+ * @apiSuccess {Number}	    likes.is_original_poster    If the User is also the Author of the Post
  *
- * @apiSuccess {Object[]}	posts.user 			        The User who created the Post
- * @apiSuccess {Object[]}	posts.user.firstname		Firstname of the User
- * @apiSuccess {Object[]}	posts.user.lastname 	    Lastname of the User
- * @apiSuccess {Number}		posts.user.id 		        ID of the User
- * @apiSuccess {URL}		posts.user.href 		    Reference to the endpoint
+ * @apiSuccess {Object[]}	likes.user 			        The User who created the Post
+ * @apiSuccess {String}	    likes.user.firstname		Firstname of the User
+ * @apiSuccess {String}	    likes.user.lastname 	    Lastname of the User
+ * @apiSuccess {Number}		likes.user.id 		        ID of the User
+ * @apiSuccess {URL}		likes.user.href 		    Reference to the endpoint
  */
-	$app->get('/posts/{id}/likes/', function( $req, $res, $args) {
+use LocalFeud\Helpers\NameGenerator;
 
-        $date = new DateTime('now');
+$app->get('/posts/{id}/likes/', function($req, $res, $args) {
 
-        $dummyResponse = array(
-            array(
-                'id' => 1,
-                'user' => array(
-                    'id' => 1,
-                    'firstname' => 'Karl',
-                    'lastname' => 'Karlsson',
-                    'href' => API_ROOT_URL . '/users/1/'
-                ),
-                'date_liked' => $date->format('c'),
-                'is_original_poster' => false,
-                'href' => API_ROOT_URL . '/likes/1/'
-            ),
-            array(
-                'id' => 2,
-                'user' => array(
-                    'id' => 1,
-                    'firstname' => 'Karl',
-                    'lastname' => 'Karlsson',
-                    'href' => API_ROOT_URL . '/users/1/'
-                ),
-                'date_liked' => $date->format('c'),
-                'is_original_poster' => false,
-                'href' => API_ROOT_URL . '/likes/2/'
-            )
+        /** @var \Pixie\QueryBuilder\QueryBuilderHandler $qb */
+        $qb = $this->querybuilder;
+        NameGenerator::setQB( $qb );
+
+
+        $likes = $qb->table('likes')->where('likes.postid', '=', $args['id']);
+
+
+        $likes->leftJoin('post_commentators', function(\Pixie\QueryBuilder\JoinBuilder $table) {
+            $table->on('likes.postid', '=', 'post_commentators.postid');
+            $table->on('likes.userid', '=', 'post_commentators.userid');
+        });
+
+
+        $likes->leftJoin('posts', 'likes.postid', '=', 'posts.id');
+
+
+        $likes->select(
+            [
+                'posts.authorid',
+                'likes.userid',
+                'likes.postid',
+                'post_commentators.firstname',
+                'post_commentators.lastname',
+                'likes.date_created'
+            ]
         );
 
 
+
+        $responseData = $likes->get();
+
+        foreach($responseData as &$like) {
+
+
+            // Format is_original_poster
+            $like->is_original_poster = $like->authorid == $like->userid;
+
+
+
+
+
+
+            // Format user
+            if( $like->firstname == null && $like->lastname == null) {
+                list($firstname, $lastname) = NameGenerator::generate($like->postid, $like->userid);
+                $like->firstname = $firstname;
+                $like->lastname = $lastname;
+            }
+
+            $user = array(
+                'id' => $like->userid,
+                'firstname' => $like->firstname,
+                'lastname' => $like->lastname,
+                'href' => $this->get('router')->pathFor('user', array(
+                    'id' => $like->userid
+                ))
+            );
+            $like->user = $user;
+
+
+            unset($like->firstname);
+            unset($like->lastname);
+            unset($like->userid);
+
+
+
+
+
+
+            // Format date liked
+            $like->date_liked = $like->date_created;
+            unset($like->date_created);
+
+            unset($like->postid);
+
+
+        }
+
+
+
         $newRes = $res->withJson(
-           $dummyResponse
+           $responseData, null, JSON_NUMERIC_CHECK
         );
 
         return $newRes;
