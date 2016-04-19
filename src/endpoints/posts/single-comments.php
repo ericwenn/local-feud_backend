@@ -2,6 +2,24 @@
 use LocalFeud\Helpers\NameGenerator;
 use Respect\Validation\Validator;
 
+/**
+ * @api {get} /posts/:id/comments/ Comments on a Post
+ * @apiGroup Comment
+ *
+ * @apiParam {Number}       id                              ID of Post
+ *
+ * @apiSuccess {Object[]}	comments 					    The Comments
+ * @apiSuccess {Date}		comments.date_posted    	    Date when the comment was created
+ * @apiSuccess {Boolean}	comments.is_original_poster     If the User is also the Author of the Post
+ *
+ * @apiSuccess {String}     comments.content                The Comments content
+ *
+ * @apiSuccess {Object[]}	comments.user 			        The User who created the Post
+ * @apiSuccess {String}	    comments.user.firstname		    Firstname of the User
+ * @apiSuccess {String}	    comments.user.lastname 	        Lastname of the User
+ * @apiSuccess {Number}		comments.user.id 		        ID of the User
+ * @apiSuccess {URL}		comments.user.href 		    Reference to the endpoint
+ */
 $app->get('/posts/{id}/comments/', function($req, $res, $args) {
 
 
@@ -87,6 +105,23 @@ $app->get('/posts/{id}/comments/', function($req, $res, $args) {
     return $newRes;
 })->setName('postComments');
 
+
+
+
+
+
+
+/**
+ * @api {post} /posts/:id/comments/ Comment a Post
+ * @apiGroup Comment
+ *
+ * @apiParam {Number} id        ID of Post
+ * @apiParam {String} content   The content of the comment
+ *
+ * 
+ * @apiUse Unauthorized
+ * @apiUse NotFound
+ */
 
 
     $app->post('/posts/{id}/comments/', function( \Slim\Http\Request $req, \Slim\Http\Response $res, $args) {

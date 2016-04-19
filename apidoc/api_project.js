@@ -1,14 +1,14 @@
 define({
   "name": "Local Feud",
   "version": "0.1.0",
-  "description": "apiDoc basic example",
-  "title": "Custom apiDoc browser title",
-  "url": "https://api.github.com/v1",
-  "sampleUrl": false,
+  "description": "Local Feud API doc",
+  "title": "Documentation - Local Feud",
+  "url": "http://api-local.ericwenn.se",
+  "sampleUrl": "http://api-local.ericwenn.se",
   "apidoc": "0.2.0",
   "generator": {
     "name": "apidoc",
-    "time": "2016-04-16T13:46:24.971Z",
+    "time": "2016-04-19T15:39:30.246Z",
     "url": "http://apidocjs.com",
     "version": "0.15.1"
   }

@@ -1,6 +1,326 @@
 [
   {
     "type": "get",
+    "url": "/posts/:id/comments/",
+    "title": "Comments on a Post",
+    "group": "Comment",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>ID of Post</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "comments",
+            "description": "<p>The Comments</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Date",
+            "optional": false,
+            "field": "comments.date_posted",
+            "description": "<p>Date when the comment was created</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "comments.is_original_poster",
+            "description": "<p>If the User is also the Author of the Post</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "comments.content",
+            "description": "<p>The Comments content</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "comments.user",
+            "description": "<p>The User who created the Post</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "comments.user.firstname",
+            "description": "<p>Firstname of the User</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "comments.user.lastname",
+            "description": "<p>Lastname of the User</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "comments.user.id",
+            "description": "<p>ID of the User</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "URL",
+            "optional": false,
+            "field": "comments.user.href",
+            "description": "<p>Reference to the endpoint</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/endpoints/posts/single-comments.php",
+    "groupTitle": "Comment",
+    "name": "GetPostsIdComments",
+    "sampleRequest": [
+      {
+        "url": "http://api-local.ericwenn.se/posts/:id/comments/"
+      }
+    ]
+  },
+  {
+    "type": "post",
+    "url": "/posts/:id/comments/",
+    "title": "Comment a Post",
+    "group": "Comment",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>ID of Post</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "content",
+            "description": "<p>The content of the comment</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/endpoints/posts/single-comments.php",
+    "groupTitle": "Comment",
+    "name": "PostPostsIdComments",
+    "sampleRequest": [
+      {
+        "url": "http://api-local.ericwenn.se/posts/:id/comments/"
+      }
+    ],
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response: Unauthorized",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"status\": 401,\n    \"message\": \"Unauthorized Request\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response: Not Found",
+          "content": "HTTP/1.1 404 Not Found\n{\n    \"status\": 404,\n    \"message\": \"Resource not found\"\n}",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "delete",
+    "url": "/posts/:id/likes/",
+    "title": "Remove Like on Post",
+    "group": "Like",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>ID of Post</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/endpoints/posts/single-likes.php",
+    "groupTitle": "Like",
+    "name": "DeletePostsIdLikes",
+    "sampleRequest": [
+      {
+        "url": "http://api-local.ericwenn.se/posts/:id/likes/"
+      }
+    ],
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response: Unauthorized",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"status\": 401,\n    \"message\": \"Unauthorized Request\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response: Not Found",
+          "content": "HTTP/1.1 404 Not Found\n{\n    \"status\": 404,\n    \"message\": \"Resource not found\"\n}",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "get",
+    "url": "/posts/:id/likes/",
+    "title": "Likes on a Post",
+    "group": "Like",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>ID of Post</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "likes",
+            "description": "<p>The Likes</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Date",
+            "optional": false,
+            "field": "likes.date_liked",
+            "description": "<p>Date when the Post was liked</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "likes.is_original_poster",
+            "description": "<p>If the User is also the Author of the Post</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "likes.user",
+            "description": "<p>The User who created the Post</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "likes.user.firstname",
+            "description": "<p>Firstname of the User</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "likes.user.lastname",
+            "description": "<p>Lastname of the User</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "likes.user.id",
+            "description": "<p>ID of the User</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "URL",
+            "optional": false,
+            "field": "likes.user.href",
+            "description": "<p>Reference to the endpoint</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/endpoints/posts/single-likes.php",
+    "groupTitle": "Like",
+    "name": "GetPostsIdLikes",
+    "sampleRequest": [
+      {
+        "url": "http://api-local.ericwenn.se/posts/:id/likes/"
+      }
+    ]
+  },
+  {
+    "type": "post",
+    "url": "/posts/:id/likes/",
+    "title": "Like a Post",
+    "group": "Like",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>ID of Post</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/endpoints/posts/single-likes.php",
+    "groupTitle": "Like",
+    "name": "PostPostsIdLikes",
+    "sampleRequest": [
+      {
+        "url": "http://api-local.ericwenn.se/posts/:id/likes/"
+      }
+    ],
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response: Unauthorized",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"status\": 401,\n    \"message\": \"Unauthorized Request\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response: Not Found",
+          "content": "HTTP/1.1 404 Not Found\n{\n    \"status\": 404,\n    \"message\": \"Resource not found\"\n}",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "get",
     "url": "/posts/",
     "title": "Create post",
     "name": "CreatePost",
@@ -56,6 +376,11 @@
     "version": "0.0.0",
     "filename": "src/endpoints/posts/archive.php",
     "groupTitle": "Post",
+    "sampleRequest": [
+      {
+        "url": "http://api-local.ericwenn.se/posts/"
+      }
+    ],
     "error": {
       "examples": [
         {
@@ -219,6 +544,11 @@
     "version": "0.0.0",
     "filename": "src/endpoints/posts/single.php",
     "groupTitle": "Post",
+    "sampleRequest": [
+      {
+        "url": "http://api-local.ericwenn.se/posts/:id/"
+      }
+    ],
     "error": {
       "examples": [
         {
@@ -390,11 +720,100 @@
     "version": "0.0.0",
     "filename": "src/endpoints/posts/archive.php",
     "groupTitle": "Post",
+    "sampleRequest": [
+      {
+        "url": "http://api-local.ericwenn.se/posts/"
+      }
+    ],
     "error": {
       "examples": [
         {
           "title": "Error-Response: Unauthorized",
           "content": "HTTP/1.1 401 Unauthorized\n{\n    \"status\": 401,\n    \"message\": \"Unauthorized Request\"\n}",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "delete",
+    "url": "/posts/:id/reports/",
+    "title": "Unreport a post",
+    "group": "Report",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>ID of Post</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/endpoints/posts/single-reports.php",
+    "groupTitle": "Report",
+    "name": "DeletePostsIdReports",
+    "sampleRequest": [
+      {
+        "url": "http://api-local.ericwenn.se/posts/:id/reports/"
+      }
+    ],
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response: Unauthorized",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"status\": 401,\n    \"message\": \"Unauthorized Request\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response: Not Found",
+          "content": "HTTP/1.1 404 Not Found\n{\n    \"status\": 404,\n    \"message\": \"Resource not found\"\n}",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "post",
+    "url": "/posts/:id/reports/",
+    "title": "Report a post",
+    "group": "Report",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>ID of Post</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/endpoints/posts/single-reports.php",
+    "groupTitle": "Report",
+    "name": "PostPostsIdReports",
+    "sampleRequest": [
+      {
+        "url": "http://api-local.ericwenn.se/posts/:id/reports/"
+      }
+    ],
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response: Unauthorized",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"status\": 401,\n    \"message\": \"Unauthorized Request\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response: Not Found",
+          "content": "HTTP/1.1 404 Not Found\n{\n    \"status\": 404,\n    \"message\": \"Resource not found\"\n}",
           "type": "json"
         }
       ]

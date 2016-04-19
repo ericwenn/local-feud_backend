@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * @api {post} /posts/:id/reports/ Report a post
+ * @apiGroup Report
+ *
+ * @apiParam {Number} id        ID of Post
+ *
+ * @apiUse Unauthorized
+ * @apiUse NotFound
+ */
 
 $app->post('/posts/{id}/reports/', function( \Slim\Http\Request $req, \Slim\Http\Response $res, $args ) {
 
@@ -40,7 +48,15 @@ $app->post('/posts/{id}/reports/', function( \Slim\Http\Request $req, \Slim\Http
 
 
 
-
+/**
+ * @api {delete} /posts/:id/reports/ Unreport a post
+ * @apiGroup Report
+ *
+ * @apiParam {Number} id        ID of Post
+ *
+ * @apiUse Unauthorized
+ * @apiUse NotFound
+ */
 
 
 $app->delete('/posts/{id}/reports/', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args) {

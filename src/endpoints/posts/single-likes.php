@@ -1,10 +1,9 @@
 <?php
 /**
  * @api {get} /posts/:id/likes/ Likes on a Post
- * @apiGroup Post
+ * @apiGroup Like
  *
- * @apiIgnore
- * @apiParam {Number}       id
+ * @apiParam {Number}       id                          ID of Post
  * 
  * @apiSuccess {Object[]}	likes 					    The Likes
  * @apiSuccess {Date}		likes.date_liked    	    Date when the Post was liked
@@ -115,7 +114,15 @@ $app->get('/posts/{id}/likes/', function($req, $res, $args) {
 
 
 
-
+/**
+ * @api {post} /posts/:id/likes/ Like a Post
+ * @apiGroup Like
+ *
+ * @apiParam {Number} id        ID of Post
+ *
+ * @apiUse Unauthorized
+ * @apiUse NotFound
+ */
 
 
 
@@ -159,7 +166,15 @@ $app->post('/posts/{id}/likes/', function( \Slim\Http\Request $req, \Slim\Http\R
 
 
 
-
+/**
+ * @api {delete} /posts/:id/likes/ Remove Like on Post
+ * @apiGroup Like
+ *
+ * @apiParam {Number} id        ID of Post
+ *
+ * @apiUse Unauthorized
+ * @apiUse NotFound
+ */
 
 $app->delete('/posts/{id}/likes/', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args) {
 
