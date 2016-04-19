@@ -1,28 +1,33 @@
 <?php
-	$app->get('/posts/{id}/comments/', function( $req, $res, $args) {
+use LocalFeud\Helpers\NameGenerator;
+use Respect\Validation\Validator;
+
+$app->get('/posts/{id}/comments/', function($req, $res, $args) {
 
 
-        /** @var \Pixie\QueryBuilder\QueryBuilderHandler $qb */
-        $qb = $this->querybuilder;
+    /** @var \Pixie\QueryBuilder\QueryBuilderHandler $qb */
+    $qb = $this->querybuilder;
 
-        /** @var \Slim\Router $router */
-        $router = $this->get('router');
+    NameGenerator::setQB($qb);
+
+    /** @var \Slim\Router $router */
+    $router = $this->get('router');
 
 
-        $comments = $qb->table('comments');
+    $comments = $qb->table('comments');
 
-        $comments->where('comments.postid', '=', $args['id']);
+    $comments->where('comments.postid', '=', $args['id']);
 
-        $comments->leftJoin('post_commentators', function( $table ) {
+    $comments->leftJoin('post_commentators', function( $table ) {
             $table->on('comments.postid', '=', 'post_commentators.postid');
             $table->on('comments.authorid', '=', 'post_commentators.userid');
         });
 
-        $comments->leftJoin('posts', 'comments.postid', '=', 'posts.id');
+    $comments->leftJoin('posts', 'comments.postid', '=', 'posts.id');
 
 
 
-        $comments->select(
+    $comments->select(
             [
                 'comments.id',
                 'comments.date_posted',
@@ -35,15 +40,21 @@
         );
 
 
-        $responseData = $comments->get();
+    $responseData = $comments->get();
 
-        foreach( $responseData as &$comment) {
+    foreach( $responseData as &$comment) {
 
             // format is_original_poster
             $comment->is_original_poster = $comment->userid == $comment->authorid;
 
 
             // format user
+            if( $comment->firstname == null && $comment->lastname == null) {
+                list($firstname, $lastname) = NameGenerator::generate($args['id'], $comment->userid);
+                $comment->firstname = $firstname;
+                $comment->lastname = $lastname;
+
+            }
             $user = [
                 'id' => $comment->userid,
                 'firstname' => $comment->firstname,
@@ -60,47 +71,10 @@
 
 
 
-
-
-
-
         }
 
 
 
-
-        /*
-        $date = new DateTime('now');
-
-        $dummyResponse = array(
-            array(
-                'id' => 1,
-                'user' => array(
-                    'id' => 1,
-                    'firstname' => 'Karl',
-                    'lastname' => 'Karlsson',
-                    'href' => API_ROOT_URL . '/users/1/'
-                ),
-                'content' => 'Lorem ipsum dolorem-comment.',
-                'date_posted' => $date->format('c'),
-                'is_original_poster' => false,
-                'href' => API_ROOT_URL . '/posts/1/'
-            ),
-            array(
-                'id' => 2,
-                'user' => array(
-                    'id' => 1,
-                    'firstname' => 'Karl',
-                    'lastname' => 'Karlsson',
-                    'href' => API_ROOT_URL . '/users/1/'
-                ),
-                'content' => 'Lorem ipsum dolorem-comment.',
-                'date_posted' => $date->format('c'),
-                'is_original_poster' => false,
-                'href' => API_ROOT_URL . '/posts/1/'
-            )
-        );
-        */
 
         $newRes = $res->withJson(
            $responseData, null, JSON_NUMERIC_CHECK
@@ -108,3 +82,47 @@
 
         return $newRes;
     })->setName('postComments');
+
+
+
+    $app->post('/posts/{id}/comments/', function( \Slim\Http\Request $req, \Slim\Http\Response $res, $args) {
+
+        /** @var \Pixie\QueryBuilder\QueryBuilderHandler $qb */
+        $qb = $this->querybuilder;
+
+        $comment = $req->getParsedBody();
+
+
+
+        // Validate content
+        if( !isset( $comment['content'] )) {
+            throw new \LocalFeud\Exceptions\BadRequestException("Content not set");
+        }
+
+        if( !Validator::length(0,255)->validate($comment['content'])) {
+            throw new \LocalFeud\Exceptions\BadRequestException("Content too long");
+        }
+
+
+        // TODO Use authenticated user instead
+        $userID = 10;
+
+
+        $comments = $qb->table('comments');
+        $comments->insert(
+            [
+                'content' => $comment['content'],
+                'authorid' => $userID,
+                'postid' => $args['id']
+            ]
+        );
+
+        $newRes = $res->withJson(
+            [
+                'status' => 200
+            ], null, JSON_NUMERIC_CHECK
+        );
+
+        return $newRes;
+
+    });
