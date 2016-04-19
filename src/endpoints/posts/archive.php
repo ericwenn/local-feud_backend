@@ -83,14 +83,8 @@
         ));
 
 
-        try {
-            // echo $posts->getQuery()->getRawSql();
-            $responseData = $posts->get();
-        } catch(Exception $e) {
+        $responseData = $posts->get();
 
-            // TODO Fix this error handling
-            echo $e->getMessage();
-        }
 
 
         foreach ($responseData as $post) {
