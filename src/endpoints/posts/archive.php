@@ -45,6 +45,7 @@
 	use DateTime;
     use LocalFeud\Exceptions\BadRequestException;
     use Pixie\Exception;
+    use Pixie\QueryBuilder\JoinBuilder;
     use Pixie\QueryBuilder\QueryBuilderHandler;
     use Respect\Validation\Validator;
     use Slim\App;
@@ -57,17 +58,28 @@
         /** @var \Pixie\QueryBuilder\QueryBuilderHandler $queryBuilder */
         $queryBuilder = $this->querybuilder;
 
-        // Get-parameters not added yet. These points *should* be in Gothenburg.
+        // TODO Get-parameters not added yet. These points *should* be in Gothenburg.
         $fake_latitude = 52.23123;
         $fake_longitude = 11.123123;
+
+        // TODO Use authenticated user instead of this fake.
+        $userID = 2;
+
 
         $requestLocation = new Helpers\Location($fake_latitude, $fake_longitude);
 
 
         $posts = $queryBuilder->table('posts');
 
-        // Joining to post_commentators, which holds the name for everyone connected to this post.
-        $posts->leftJoin('post_commentators', 'posts.id', '=', 'post_commentators.postid');
+        $posts->leftJoin('likes', 'posts.id', '=', 'likes.postid');
+        $posts->leftJoin('comments', 'posts.id', '=', 'comments.postid');
+
+
+        $posts->leftJoin( $queryBuilder->raw('likes as l'), function( JoinBuilder $table ) use ($userID, $queryBuilder) {
+            $table->on('posts.id', '=', 'l.postid');
+            $table->on('l.userid', '=', $queryBuilder->raw($userID));
+        });
+
 
 
         $posts->select( array(
@@ -78,11 +90,17 @@
             $queryBuilder->raw('posts.latitude'),
             $queryBuilder->raw('posts.longitude'),
             $queryBuilder->raw('posts.content_type'),
-            $queryBuilder->raw('posts.text')
+            $queryBuilder->raw('posts.text'),
+            $queryBuilder->raw('count(likes.id) as number_of_likes'),
+            $queryBuilder->raw('count(comments.id) as number_of_comments'),
+            $queryBuilder->raw('l.userid as likeuserid')
 
         ));
 
+        $posts->groupBy('posts.id');
 
+
+//        echo $posts->getQuery()->getRawSql();
         $responseData = $posts->get();
 
 
@@ -121,11 +139,6 @@
 
 
 
-            // TODO Data not yet implemented
-            $post->number_of_comments = 4;
-            $post->number_of_likes = 10;
-
-
 
 
 
@@ -142,6 +155,13 @@
             $post->href = $this->get('router')->pathFor('post', [
                 'id' => $post->id
             ]);
+
+
+
+
+            // Format current_user_has_liked
+            $post->current_user_has_liked = !is_null($post->likeuserid);
+            unset($post->likeuserid);
 
 
         }
