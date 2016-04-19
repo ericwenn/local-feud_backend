@@ -92,9 +92,10 @@ $app->get('/posts/{id}/likes/', function($req, $res, $args) {
 
 
         // Format date liked
-        $like->date_liked = $like->date_created;
+        $d = new DateTime( $like->date_created );
+        $like->date_liked = $d->format('c');
+        
         unset($like->date_created);
-
         unset($like->postid);
 
 

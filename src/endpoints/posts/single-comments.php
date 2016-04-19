@@ -44,44 +44,48 @@ $app->get('/posts/{id}/comments/', function($req, $res, $args) {
 
     foreach( $responseData as &$comment) {
 
-            // format is_original_poster
-            $comment->is_original_poster = $comment->userid == $comment->authorid;
+        // format is_original_poster
+        $comment->is_original_poster = $comment->userid == $comment->authorid;
 
 
-            // format user
-            if( $comment->firstname == null && $comment->lastname == null) {
-                list($firstname, $lastname) = NameGenerator::generate($args['id'], $comment->userid);
-                $comment->firstname = $firstname;
-                $comment->lastname = $lastname;
-
-            }
-            $user = [
-                'id' => $comment->userid,
-                'firstname' => $comment->firstname,
-                'lastname' => $comment->lastname,
-                'href' => $router->pathFor('user', [ 'id' => $comment->userid ])
-            ];
-            $comment->user = $user;
-
-
-            unset($comment->authorid);
-            unset($comment->userid);
-            unset($comment->firstname);
-            unset($comment->lastname);
-
-
+        // format user
+        if( $comment->firstname == null && $comment->lastname == null) {
+            list($firstname, $lastname) = NameGenerator::generate($args['id'], $comment->userid);
+            $comment->firstname = $firstname;
+            $comment->lastname = $lastname;
 
         }
+        $user = [
+            'id' => $comment->userid,
+            'firstname' => $comment->firstname,
+            'lastname' => $comment->lastname,
+            'href' => $router->pathFor('user', [ 'id' => $comment->userid ])
+        ];
+        $comment->user = $user;
+
+
+        unset($comment->authorid);
+        unset($comment->userid);
+        unset($comment->firstname);
+        unset($comment->lastname);
+
+
+        // Format date
+        $d = new DateTime( $comment->date_posted );
+        $comment->date_posted = $d->format('c');
+
+
+    }
 
 
 
 
-        $newRes = $res->withJson(
-           $responseData, null, JSON_NUMERIC_CHECK
-        );
+    $newRes = $res->withJson(
+       $responseData, null, JSON_NUMERIC_CHECK
+    );
 
-        return $newRes;
-    })->setName('postComments');
+    return $newRes;
+})->setName('postComments');
 
 
 
