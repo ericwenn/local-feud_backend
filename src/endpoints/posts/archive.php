@@ -22,6 +22,7 @@
  * @apiSuccess {Date}		posts.date_posted		    Date when the Post was created
  * @apiSuccess {Number}	    posts.number_of_comments    Number of Comments on the Post
  * @apiSuccess {Number}	    posts.number_of_likes       Number of Likes on the Post
+ * @apiSuccess {Boolean}    posts.current_user_has_liked
  *
  * @apiSuccess {Object[]}	posts.user 			        The User who created the Post
  * @apiSuccess {Number}		posts.user.id 		        ID of the User
@@ -137,7 +138,8 @@
 
 
 
-
+            // TODO Check if user has liked
+            $post->current_user_has_liked = true;
 
 
 
