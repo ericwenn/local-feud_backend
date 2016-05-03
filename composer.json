@@ -6,7 +6,8 @@
     "slim/slim": "3.3.0",
     "slim/http-cache": "^0.3.0",
     "respect/validation": "2.0.x-dev",
-    "nubs/random-name-generator": "v1.0.0"
+    "nubs/random-name-generator": "v1.0.0",
+    "facebook/php-sdk-v4": "5.1.2"
   },
   "autoload": {
     "psr-4": {"LocalFeud\\": "src/"}

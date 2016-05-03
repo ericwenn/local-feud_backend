@@ -1,6 +1,10 @@
 <?php
+use LocalFeud\Exceptions\BadRequestException;
 use LocalFeud\Helpers\NameGenerator;
+use LocalFeud\Helpers\User;
 use Respect\Validation\Validator;
+use Slim\Http\Request;
+use Slim\Http\Response;
 
 /**
  * @api {get} /posts/:id/comments/ Comments on a Post
@@ -20,7 +24,7 @@ use Respect\Validation\Validator;
  * @apiSuccess {Number}		comments.user.id 		        ID of the User
  * @apiSuccess {URL}		comments.user.href 		    Reference to the endpoint
  */
-$app->get('/posts/{id}/comments/', function($req, $res, $args) {
+$app->get('/posts/{id}/comments/', function(Request $req, Response $res, $args) {
 
 
     /** @var \Pixie\QueryBuilder\QueryBuilderHandler $qb */
@@ -124,7 +128,7 @@ $app->get('/posts/{id}/comments/', function($req, $res, $args) {
  */
 
 
-    $app->post('/posts/{id}/comments/', function( \Slim\Http\Request $req, \Slim\Http\Response $res, $args) {
+    $app->post('/posts/{id}/comments/', function( Request $req, Response $res, $args) {
 
         /** @var \Pixie\QueryBuilder\QueryBuilderHandler $qb */
         $qb = $this->querybuilder;
@@ -135,16 +139,16 @@ $app->get('/posts/{id}/comments/', function($req, $res, $args) {
 
         // Validate content
         if( !isset( $comment['content'] )) {
-            throw new \LocalFeud\Exceptions\BadRequestException("Content not set");
+            throw new BadRequestException("Content not set");
         }
 
         if( !Validator::length(0,255)->validate($comment['content'])) {
-            throw new \LocalFeud\Exceptions\BadRequestException("Content too long");
+            throw new BadRequestException("Content too long");
         }
 
 
         // TODO Use authenticated user instead
-        $userID = 10;
+        $userID = User::getInstance()->getUserId();
 
 
         $comments = $qb->table('comments');

@@ -16,6 +16,7 @@
  * @apiSuccess {URL}		likes.user.href 		    Reference to the endpoint
  */
 use LocalFeud\Helpers\NameGenerator;
+use LocalFeud\Helpers\User;
 
 $app->get('/posts/{id}/likes/', function($req, $res, $args) {
 
@@ -131,8 +132,7 @@ $app->post('/posts/{id}/likes/', function( \Slim\Http\Request $req, \Slim\Http\R
     /** @var \Pixie\QueryBuilder\QueryBuilderHandler $qb */
     $qb = $this->querybuilder;
 
-    // TODO Authenticated used instead of this
-    $userID = 2;
+    $userID = User::getInstance()->getUserId();
     $postID = $args['id'];
 
 
@@ -182,8 +182,7 @@ $app->delete('/posts/{id}/likes/', function(\Slim\Http\Request $req, \Slim\Http\
     /** @var \Pixie\QueryBuilder\QueryBuilderHandler $qb */
     $qb = $this->querybuilder;
 
-    // TODO Authenticated used instead of this
-    $userID = 2;
+    $userID = User::getInstance()->getUserId();
     $postID = $args['id'];
 
 

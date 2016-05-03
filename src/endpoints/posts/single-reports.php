@@ -9,13 +9,15 @@
  * @apiUse NotFound
  */
 
-$app->post('/posts/{id}/reports/', function( \Slim\Http\Request $req, \Slim\Http\Response $res, $args ) {
+use LocalFeud\Helpers\User;
+
+$app->post('/posts/{id}/reports/', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args ) {
 
     /** @var \Pixie\QueryBuilder\QueryBuilderHandler $qb */
     $qb = $this->querybuilder;
 
     // TODO Authenticated used instead of this
-    $userID = 2;
+    $userID = User::getInstance()->getUserId();
     $postID = $args['id'];
 
 
@@ -65,8 +67,7 @@ $app->delete('/posts/{id}/reports/', function(\Slim\Http\Request $req, \Slim\Htt
     /** @var \Pixie\QueryBuilder\QueryBuilderHandler $qb */
     $qb = $this->querybuilder;
 
-    // TODO Authenticated used instead of this
-    $userID = 2;
+    $userID = User::getInstance()->getUserId();
     $postID = $args['id'];
 
 

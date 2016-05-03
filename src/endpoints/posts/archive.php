@@ -44,6 +44,7 @@
 
 	use DateTime;
     use LocalFeud\Exceptions\BadRequestException;
+    use LocalFeud\Helpers\User;
     use Pixie\Exception;
     use Pixie\QueryBuilder\JoinBuilder;
     use Pixie\QueryBuilder\QueryBuilderHandler;
@@ -62,8 +63,7 @@
         $fake_latitude = 52.23123;
         $fake_longitude = 11.123123;
 
-        // TODO Use authenticated user instead of this fake.
-        $userID = 2;
+        $userID = User::getInstance()->getUserId();
 
 
         $requestLocation = new Helpers\Location($fake_latitude, $fake_longitude);
@@ -272,7 +272,7 @@
         $qb = $this->querybuilder;
 
         // TODO Use authenticated users ID instead
-        $userID = 1;
+        $userID = User::getInstance()->getUserId();
 
 
         $post['authorID'] = $userID;
