@@ -1,5 +1,6 @@
 <?php
     namespace LocalFeud;
+    use LocalFeud\Exceptions\UnauthorizedException;
     use Pixie\QueryBuilder;
     use Slim\App;
     use Slim\Container;
@@ -18,6 +19,9 @@
 
         return $qb;
     };
+
+
+
 
 
     $container['errorHandler'] = function($c) {
@@ -45,6 +49,17 @@
     
     $app = new App($container);
 
+
+
+
+
+    // Setup authentication middleware
+    $app->add(function($request, $response, $next) {
+        throw new UnauthorizedException("Not authorized");
+        $response = $next($request, $response);
+
+        return $response;
+    });
 
 
     include("endpoints/posts/archive.php");
