@@ -84,51 +84,7 @@
         /** @var Facebook $fb */
         $fb = $this->fb;
 
-
-        try {
-            /** @var FacebookResponse $fb_response */
-            $fb_response = $fb->get('/me', $request_token);
-            /** @var GraphUser $graphUser */
-            $graphUser = $fb_response->getGraphUser();
-        } catch (FacebookResponseException $e) {
-            // If the token isnt valid, throw unatohrized
-            throw new UnauthorizedException('Accesstoken not valid');
-        }
-
-        // Check if the provided user id is the same as token owner
-        if( $graphUser->getId() != $request_userid) {
-            throw new UnauthorizedException('User id does not match token');
-        }
-
-        // Check if the user is in our database already
-        $dbUser = $qb->table('users');
-        $dbUser->where('facebook_user_id', '=', $request_userid);
-
-        $dbUser = $dbUser->get();
-
-        if(sizeof($dbUser) > 0) {
-            // If the user exists, but token is not the same: update token
-            if( $request_token != $dbUser[0]->facebook_access_token) {
-
-                $qb->table('users')->where('id', '=', $dbUser[0]->id)->update([
-                    'facebook_access_token' => $request_token
-                ]);
-                $dbUser[0]->facebook_access_token = $request_token;
-            }
-            // If it exists and the token is the same, set user object.
-            User::setInstance($dbUser[0]->id, $dbUser[0]->facebook_access_token, $dbUser[0]->facebook_user_id);
-
-
-        } else {
-            // If the user doesnt exist, insert in db with token
-            $userID = $qb->table('users')->insert([
-                'facebook_user_id' => $request_userid,
-                'facebook_access_token' => $request_token
-            ]);
-
-            User::setInstance($userID, $request_token, $request_userid);
-
-        }
+        User::setInstance($request_userid, $request_token, $qb, $fb);
 
 
 
