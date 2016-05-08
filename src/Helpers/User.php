@@ -87,6 +87,7 @@ class User {
         $dbUser = $dbUser->get();
 
         if(sizeof($dbUser) > 0) {
+
             // If the user exists, but token is not the same: update token
             if( $this->access_token != $dbUser[0]->facebook_access_token) {
 
@@ -96,21 +97,24 @@ class User {
                 $dbUser[0]->facebook_access_token = $this->access_token;
             }
 
-            if($dbUser[0]->age == null || $dbUser[0]->gender == null) {
-                $this->qb->table('users')->where('id', '=', $dbUser[0]->id)->update([
-                    'sex' => $this->graphUser->getGender(),
-                    'age' => $this->graphUser->getBirthday()
-                ]);
-            }
+
+            // Update date of birth and gender from Facebook Graph
+            $this->qb->table('users')->where('id', '=', $dbUser[0]->id)->update([
+                'sex' => $this->graphUser->getGender(),
+                'birthday' => $this->graphUser->getBirthday()->format('U')
+            ]);
+            echo $this->graphUser->getBirthday()->format( "m/d/Y");
+
+            // Save user id
             $this->user_id = $dbUser[0]->id;
 
         } else {
-            // If the user doesnt exist, insert in db with token
+            // If the user doesnt exist, insert in db with token and save user id
             $this->user_id = $this->qb->table('users')->insert([
                 'facebook_user_id' => $this->facebook_id,
                 'facebook_access_token' => $this->access_token,
                 'sex' => $this->graphUser->getGender(),
-                'age' => $this->graphUser->getBirthday()
+                'birthday' => $this->graphUser->getBirthday()->format('U')
             ]);
 
         }
