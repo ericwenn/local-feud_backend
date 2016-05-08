@@ -103,7 +103,6 @@ class User {
                 'sex' => $this->graphUser->getGender(),
                 'birthday' => $this->graphUser->getBirthday()->format('U')
             ]);
-            echo $this->graphUser->getBirthday()->format( "m/d/Y");
 
             // Save user id
             $this->user_id = $dbUser[0]->id;
