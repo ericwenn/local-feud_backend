@@ -87,6 +87,7 @@ $app->get('/chats/', function($req, $res, $args) {
  *
  * @apiUse Unauthorized
  * @apiUse NotFound
+ * @apiUse BadRequest
  */
 
 

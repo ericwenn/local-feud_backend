@@ -1,5 +1,66 @@
 define({ "api": [
   {
+    "type": "post",
+    "url": "/chats/",
+    "title": "Start chat with user",
+    "name": "StartChat",
+    "group": "Chat",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "userid",
+            "description": "<p>ID of the User to request a chat with</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "NUmber",
+            "optional": false,
+            "field": "postid",
+            "description": "<p>ID of the Post where Chat was initiated</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-Example",
+          "content": "{\n    \"userid\": 1\n    \"postid\": 1\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "src/endpoints/chats/archive.php",
+    "groupTitle": "Chat",
+    "sampleRequest": [
+      {
+        "url": "http://api-local.ericwenn.se/chats/"
+      }
+    ],
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response: Unauthorized",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"status\": 401,\n    \"message\": \"Unauthorized Request\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response: Not Found",
+          "content": "HTTP/1.1 404 Not Found\n{\n    \"status\": 404,\n    \"message\": \"Resource not found\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response: Bad Request",
+          "content": "HTTP/1.1 400 Bad Request\n{\n    \"status\": 400,\n    \"message\": \"Parameters missing or malformed\"\n}",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
     "type": "get",
     "url": "/posts/:id/comments/",
     "title": "Comments on a Post",
@@ -643,6 +704,13 @@ define({ "api": [
             "optional": false,
             "field": "posts.number_of_likes",
             "description": "<p>Number of Likes on the Post</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "posts.current_user_has_liked",
+            "description": ""
           },
           {
             "group": "Success 200",
