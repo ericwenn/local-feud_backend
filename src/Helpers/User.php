@@ -102,7 +102,7 @@ class User {
             // Update date of birth and gender from Facebook Graph
             $this->qb->table('users')->where('id', '=', $dbUser[0]->id)->update([
                 'sex' => $this->graphUser->getGender(),
-                'birthday' => $this->graphUser->getBirthday() == null ? null : $this->graphUser->getBirthday()->format('U'),
+                'birthday' => $this->graphUser->getBirthday() == null ? null : $this->graphUser->getBirthday()->format('Y-m-d H:i:s'),
                 'firstname' => $this->graphUser->getFirstName(),
                 'lastname' => $this->graphUser->getLastName()
             ]);
@@ -117,7 +117,7 @@ class User {
                 'facebook_user_id' => $this->facebook_id,
                 'facebook_access_token' => $this->access_token,
                 'sex' => $this->graphUser->getGender(),
-                'birthday' => $this->graphUser->getBirthday() == null ? null : $this->graphUser->getBirthday()->format('U'),
+                'birthday' => $this->graphUser->getBirthday() == null ? null : $this->graphUser->getBirthday()->format('Y-m-d H:i:s'),
                 'firstname' => $this->graphUser->getFirstName(),
                 'lastname' => $this->graphUser->getLastName()
             ]);
