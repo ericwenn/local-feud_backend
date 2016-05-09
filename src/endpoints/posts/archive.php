@@ -45,6 +45,7 @@
 
 	use DateTime;
     use LocalFeud\Exceptions\BadRequestException;
+    use LocalFeud\Helpers\NameGenerator;
     use LocalFeud\Helpers\User;
     use Pixie\Exception;
     use Pixie\QueryBuilder\JoinBuilder;
@@ -82,6 +83,12 @@
         });
 
 
+        // Join on post_commentators to get ficitional name of the author
+        $posts->leftJoin('post_commentators', function(\Pixie\QueryBuilder\JoinBuilder $table) {
+            $table->on('posts.id', '=', 'post_commentators.postid');
+            $table->on('posts.authorid', '=', 'post_commentators.userid');
+        });
+
 
         $posts->select( array(
             $queryBuilder->raw('posts.id'),
@@ -94,7 +101,9 @@
             $queryBuilder->raw('posts.text'),
             $queryBuilder->raw('count(likes.id) as number_of_likes'),
             $queryBuilder->raw('count(comments.id) as number_of_comments'),
-            $queryBuilder->raw('l.userid as likeuserid')
+            $queryBuilder->raw('l.userid as likeuserid'),
+            $queryBuilder->raw('post_commentators.firstname as firstname'),
+            $queryBuilder->raw('post_commentators.lastname as lastname')
 
         ));
 
@@ -127,14 +136,31 @@
             
             
             // Formatting the user-object
+
+            // If no name is generator for the user yet, generate one and insert it to database.
+            if( $post->firstname == null && $post->lastname == null) {
+
+                NameGenerator::setQB( $queryBuilder );
+                list( $firstname, $lastname ) = NameGenerator::generate($post->id, $post->authorid);
+
+
+                $post->firstname = $firstname;
+                $post->lastname = $lastname;
+            }
+
+
             $user = array(
                 'id' => $post->authorid,
+                'firstname' => $post->firstname,
+                'lastname' => $post->lastname,
                 'href' => $this->get('router')->pathFor('user', [
                     'id' => $post->authorid
                 ])
             );
             $post->user = $user;
             unset($post->authorid);
+            unset($post->firstname);
+            unset($post->lastname);
 
 
 
