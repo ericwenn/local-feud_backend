@@ -39,12 +39,16 @@ $app->get('/chats/', function($req, $res, $args) {
                     'id' => 1,
                     'firstname' => 'Karl',
                     'lastname' => 'Karlsson',
+                    'sex' => 'male',
+                    'age' => 10,
                     'href' => API_ROOT_URL . '/users/1/'
                 ),
                 array(
                     'id' => 2,
                     'firstname' => 'Johan',
                     'lastname' => 'Ulvgren',
+                    'sex' => 'male',
+                    'age' => 10,
                     'href' => API_ROOT_URL . '/users/2/'
                 )
             ),
@@ -59,12 +63,16 @@ $app->get('/chats/', function($req, $res, $args) {
                     'id' => 1,
                     'firstname' => 'Karl',
                     'lastname' => 'Karlsson',
+                    'sex' => 'male',
+                    'age' => 10,
                     'href' => API_ROOT_URL . '/users/1/'
                 ),
                 array(
                     'id' => 2,
                     'firstname' => 'Johan',
                     'lastname' => 'Ulvgren',
+                    'sex' => 'male',
+                    'age' => 10,
                     'href' => API_ROOT_URL . '/users/2/'
                 )
             ),
