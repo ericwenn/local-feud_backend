@@ -189,14 +189,35 @@ $app->post('/chats/', function( Request $request, Response $response, $args) {
         where('postid', '=', $postRequestedFrom)->
         where('userid', '=', $requestedUser);
 
-    print_r($posts->get());
+    if( $posts->count() == 0) {
+        throw new BadRequestException("User (" . $requestedUser . ") has not commented post (". $postRequestedFrom . ")");
+    }
 
 
 
 
-    // If it exists BadRequest
+    // Create chat
+    $chatID = $qb->table('chats')->insert([
 
-    //
+    ]);
+
+
+    // Insert chatmembers
+    $qb->table('chat_members')->insert([
+        [
+            'chatid' => $chatID,
+            'userid' => $requestingUser
+        ],
+        [
+            'chatid' => $chatID,
+            'userid' => $requestedUser
+        ]
+    ]);
+
+
+    $response = $response->withJson([
+        'status' => 200
+    ]);
 
     return $response;
 });
