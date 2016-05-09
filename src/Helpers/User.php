@@ -60,7 +60,7 @@ class User {
     private function checkValidityOfToken() {
         try {
             /** @var FacebookResponse $fb_response */
-            $fb_response = $this->fb->get('/me?fields=name,gender,age_range,birthday', $this->access_token);
+            $fb_response = $this->fb->get('/me?fields=first_name,last_name,gender,age_range,birthday', $this->access_token);
             /** @var GraphUser $graphUser */
             $this->graphUser = $fb_response->getGraphUser();
         } catch (FacebookResponseException $e) {
@@ -106,6 +106,7 @@ class User {
                 'firstname' => $this->graphUser->getFirstName(),
                 'lastname' => $this->graphUser->getLastName()
             ]);
+
 
             // Save user id
             $this->user_id = $dbUser[0]->id;

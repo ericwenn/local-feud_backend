@@ -85,13 +85,7 @@
         $fb = $this->fb;
 
         User::setInstance($request_userid, $request_token, $qb, $fb);
-
-
-
-
-
-
-
+        
 
         $response = $next($request, $response);
 

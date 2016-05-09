@@ -7,7 +7,26 @@ use Pixie\QueryBuilder\QueryBuilderHandler;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+
+/**
+ * @api {post} /chats/ List chats
+ * @apiName ListChats
+ * @apiGroup Chat
+ *
+ *
+ *
+ * @apiUse Unauthorized
+ */
+
 $app->get('/chats/', function($req, $res, $args) {
+
+    /** @var QueryBuilderHandler $qb */
+    $qb = $this->querybuilder;
+
+
+    $chats = $qb->table('chats');
+
+
 
     $date = new DateTime('now');
 
