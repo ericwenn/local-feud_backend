@@ -63,6 +63,19 @@ class NameGenerator {
             throw new \RuntimeException('NameGenerator is not set');
         }
 
+
+        // Check if user and post is already in db queue
+        foreach( self::$insertQueue as $queueItem) {
+            if($queueItem['postid'] == $postid && $queueItem['userid'] == $userid) {
+                return [
+                    $queueItem['firstname'],
+                    $queueItem['lastname']
+                ];
+            }
+        }
+
+
+
         $full_name = explode(' ', self::generator()->getName());
 
         self::enqueue($postid, $userid, $full_name[0], $full_name[1]);
