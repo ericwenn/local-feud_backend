@@ -41,7 +41,9 @@
  *
  */
 
-$app->get('/posts/{id}/', function( \Slim\Http\Request $req, \Slim\Http\Response $res, $args) {
+use LocalFeud\Helpers\Age;
+
+$app->get('/posts/{id}/', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args) {
 
     /** @var \Pixie\QueryBuilder\QueryBuilderHandler $qb */
     $qb = $this->querybuilder;
@@ -59,6 +61,9 @@ $app->get('/posts/{id}/', function( \Slim\Http\Request $req, \Slim\Http\Response
         $table->on('posts.authorid', '=', 'post_commentators.userid');
     });
 
+    $post->leftJoin('users', 'posts.authorid', '=', 'users.id');
+
+
 
     $post->select( [
         'posts.id',
@@ -72,7 +77,9 @@ $app->get('/posts/{id}/', function( \Slim\Http\Request $req, \Slim\Http\Response
         'date_posted',
         'content_type',
         'text',
-        'image_src'
+        'image_src',
+        'users.sex',
+        'users.birthday'
     ]);
 
 
@@ -100,10 +107,15 @@ $app->get('/posts/{id}/', function( \Slim\Http\Request $req, \Slim\Http\Response
         $responseData->lastname = $lastname;
     }
 
+    $age = Age::toAge( $responseData->birthday );
+
+
     $user = [
         'id' => $responseData->authorid,
         'firstname' => $responseData->firstname,
         'lastname' => $responseData->lastname,
+        'age' => $age,
+        'gender' => $responseData->sex,
         'href' => $this->get('router')->pathFor('user', [
             'id' => $responseData->authorid
         ])
@@ -113,6 +125,8 @@ $app->get('/posts/{id}/', function( \Slim\Http\Request $req, \Slim\Http\Response
     unset($responseData->authorid);
     unset($responseData->firstname);
     unset($responseData->lastname);
+    unset($responseData->sex);
+    unset($responseData->birthday);
 
 
 

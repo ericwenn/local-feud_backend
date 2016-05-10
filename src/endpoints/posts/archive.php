@@ -45,6 +45,7 @@
 
 	use DateTime;
     use LocalFeud\Exceptions\BadRequestException;
+    use LocalFeud\Helpers\Age;
     use LocalFeud\Helpers\NameGenerator;
     use LocalFeud\Helpers\User;
     use Pixie\Exception;
@@ -90,6 +91,10 @@
         });
 
 
+
+        $posts->leftJoin('users', 'posts.authorid', '=', 'users.id');
+
+
         $posts->select( array(
             $queryBuilder->raw('posts.id'),
             $queryBuilder->raw('posts.reach'),
@@ -103,12 +108,16 @@
             $queryBuilder->raw('count(comments.id) as number_of_comments'),
             $queryBuilder->raw('l.userid as likeuserid'),
             $queryBuilder->raw('post_commentators.firstname as firstname'),
-            $queryBuilder->raw('post_commentators.lastname as lastname')
+            $queryBuilder->raw('post_commentators.lastname as lastname'),
+            $queryBuilder->raw('users.sex'),
+            $queryBuilder->raw('users.birthday'),
+
 
         ));
 
         $posts->groupBy('posts.id');
 
+        $posts->orderBy('posts.id', 'DESC');
 
 //        echo $posts->getQuery()->getRawSql();
         $responseData = $posts->get();
@@ -148,11 +157,15 @@
                 $post->lastname = $lastname;
             }
 
+            $age = Age::toAge( $post->birthday );
+
 
             $user = array(
                 'id' => $post->authorid,
                 'firstname' => $post->firstname,
                 'lastname' => $post->lastname,
+                'gender' => $post->sex,
+                'age' => $age,
                 'href' => $this->get('router')->pathFor('user', [
                     'id' => $post->authorid
                 ])
@@ -161,6 +174,8 @@
             unset($post->authorid);
             unset($post->firstname);
             unset($post->lastname);
+            unset($post->birthday);
+            unset($post->sex);
 
 
 
