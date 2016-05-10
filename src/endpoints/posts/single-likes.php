@@ -15,6 +15,7 @@
  * @apiSuccess {Number}		likes.user.id 		        ID of the User
  * @apiSuccess {URL}		likes.user.href 		    Reference to the endpoint
  */
+use LocalFeud\Helpers\Age;
 use LocalFeud\Helpers\NameGenerator;
 use LocalFeud\Helpers\User;
 
@@ -36,6 +37,8 @@ $app->get('/posts/{id}/likes/', function($req, $res, $args) {
 
     $likes->leftJoin('posts', 'likes.postid', '=', 'posts.id');
 
+    $likes->leftJoin('users', 'users.id', '=', 'likes.userid');
+
 
     $likes->select(
         [
@@ -44,7 +47,9 @@ $app->get('/posts/{id}/likes/', function($req, $res, $args) {
             'likes.postid',
             'post_commentators.firstname',
             'post_commentators.lastname',
-            'likes.date_created'
+            'likes.date_created',
+            'users.sex',
+            'users.birthday'
         ]
     );
 
@@ -70,10 +75,13 @@ $app->get('/posts/{id}/likes/', function($req, $res, $args) {
             $like->lastname = $lastname;
         }
 
+        $age = Age::toAge($like->birthday);
         $user = array(
             'id' => $like->userid,
             'firstname' => $like->firstname,
             'lastname' => $like->lastname,
+            'age' => $age,
+            'gender' => $like->sex,
             'href' => $this->get('router')->pathFor('user', array(
                 'id' => $like->userid
             ))
@@ -85,6 +93,8 @@ $app->get('/posts/{id}/likes/', function($req, $res, $args) {
         unset($like->lastname);
         unset($like->userid);
         unset($like->authorid);
+        unset( $like->sex );
+        unset( $like->birthday );
 
 
 
