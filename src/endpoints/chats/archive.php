@@ -1,6 +1,7 @@
 <?php
 use LocalFeud\Exceptions\BadRequestException;
 use LocalFeud\Exceptions\NotFoundException;
+use LocalFeud\Helpers\Age;
 use LocalFeud\Helpers\User;
 use Pixie\QueryBuilder\JoinBuilder;
 use Pixie\QueryBuilder\QueryBuilderHandler;
@@ -26,66 +27,69 @@ $app->get('/chats/', function($req, $res, $args) {
 
     $chats = $qb->table('chats');
 
+    $chats->join('chat_members', 'chat_members.chatid', '=', 'chats.chatid');
+
+    $chats->where('chat_members.userid', '=', User::getInstance()->getUserId());
+
+    $chats->select([
+        'chats.chatid',
+        'chats.status',
+        'chats.requestsent'
+    ]);
 
 
-    $date = new DateTime('now');
 
-    $dummyResponse = array(
-        array(
-            'id' => 1,
-            'status' => 'accepted',
-            'users' => array(
-                array(
-                    'id' => 1,
-                    'firstname' => 'Karl',
-                    'lastname' => 'Karlsson',
-                    'sex' => 'male',
-                    'age' => 10,
-                    'href' => API_ROOT_URL . '/users/1/'
-                ),
-                array(
-                    'id' => 2,
-                    'firstname' => 'Johan',
-                    'lastname' => 'Ulvgren',
-                    'sex' => 'male',
-                    'age' => 10,
-                    'href' => API_ROOT_URL . '/users/2/'
-                )
-            ),
-            'date_started' => $date->format('c'),
-            'number_of_unread_messages' => 0,
-            'href' => API_ROOT_URL . '/chats/1/'
-        ),
-        array(
-            'id' => 2,
-            'users' => array(
-                array(
-                    'id' => 1,
-                    'firstname' => 'Karl',
-                    'lastname' => 'Karlsson',
-                    'sex' => 'male',
-                    'age' => 10,
-                    'href' => API_ROOT_URL . '/users/1/'
-                ),
-                array(
-                    'id' => 2,
-                    'firstname' => 'Johan',
-                    'lastname' => 'Ulvgren',
-                    'sex' => 'male',
-                    'age' => 10,
-                    'href' => API_ROOT_URL . '/users/2/'
-                )
-            ),
-            'status' => 'accepted',
-            'date_started' => $date->format('c'),
-            'number_of_unread_messages' => 2,
-            'href' => API_ROOT_URL . '/chats/2/'
-        )
-    );
+    $chats = $chats->get();
+
+
+    foreach($chats as $chat) {
+
+        $usersInChat = $qb->table('chat_members');
+        $usersInChat->leftJoin('users', 'users.id', '=', 'chat_members.userid');
+
+        $usersInChat->where(
+            'chat_members.chatid', '=', $chat->chatid
+        );
+
+        $usersInChat->whereNot('chat_members.userid', '=', User::getInstance()->getUserId());
+
+        $usersInChat->select([
+            'users.firstname',
+            'users.lastname',
+            'users.birthday',
+            'users.sex'
+        ]);
+
+        $users = [];
+        foreach( $usersInChat->get() as $user ) {
+            $users[] = [
+                'firstname' => $user->firstname,
+                'lastname' => $user->lastname,
+                'gender' => $user->sex,
+                'age' => Age::toAge($user->birthday)
+            ];
+        }
+        $chat->users = $users;
+
+
+        // TODO Use real value
+        $chat->number_of_unread_messages = 0;
+
+        $d = new DateTime( $chat->requestsent);
+        $chat->date_started = $d->format('c');
+        unset( $chat->requestsent);
+
+
+        $chat->id = $chat->chatid;
+        unset( $chat->chatid);
+    }
+
+
+
 
 
     $newRes = $res->withJson(
-        $dummyResponse
+        $chats
     );
 
     return $newRes;
