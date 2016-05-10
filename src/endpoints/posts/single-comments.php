@@ -1,5 +1,6 @@
 <?php
 use LocalFeud\Exceptions\BadRequestException;
+use LocalFeud\Helpers\Age;
 use LocalFeud\Helpers\NameGenerator;
 use LocalFeud\Helpers\User;
 use Respect\Validation\Validator;
@@ -22,7 +23,7 @@ use Slim\Http\Response;
  * @apiSuccess {String}	    comments.user.firstname		    Firstname of the User
  * @apiSuccess {String}	    comments.user.lastname 	        Lastname of the User
  * @apiSuccess {Number}		comments.user.id 		        ID of the User
- * @apiSuccess {URL}		comments.user.href 		    Reference to the endpoint
+ * @apiSuccess {URL}		comments.user.href 		        Reference to the endpoint
  */
 $app->get('/posts/{id}/comments/', function(Request $req, Response $res, $args) {
 
@@ -46,6 +47,7 @@ $app->get('/posts/{id}/comments/', function(Request $req, Response $res, $args) 
         });
 
     $comments->leftJoin('posts', 'comments.postid', '=', 'posts.id');
+    $comments->leftJoin('users', 'users.id', '=', 'comments.authorid');
 
 
 
@@ -57,7 +59,9 @@ $app->get('/posts/{id}/comments/', function(Request $req, Response $res, $args) 
                 'posts.authorid',
                 'post_commentators.firstname',
                 'post_commentators.lastname',
-                'comments.content'
+                'comments.content',
+                'users.sex',
+                'users.birthday'
             ]
         );
 
@@ -77,10 +81,16 @@ $app->get('/posts/{id}/comments/', function(Request $req, Response $res, $args) 
             $comment->lastname = $lastname;
 
         }
+
+
+        $age = Age::toAge( $comment->birthday );
+
         $user = [
             'id' => $comment->userid,
             'firstname' => $comment->firstname,
             'lastname' => $comment->lastname,
+            'age' => $age,
+            'gender' => $comment->sex,
             'href' => $router->pathFor('user', [ 'id' => $comment->userid ])
         ];
         $comment->user = $user;
@@ -90,6 +100,8 @@ $app->get('/posts/{id}/comments/', function(Request $req, Response $res, $args) 
         unset($comment->userid);
         unset($comment->firstname);
         unset($comment->lastname);
+        unset($comment->sex);
+        unset($comment->birthday);
 
 
         // Format date
