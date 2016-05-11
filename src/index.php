@@ -107,5 +107,6 @@
 
     include("endpoints/me/me.php");
 
+    include("endpoints/comments/single.php");
 
     $app->run();

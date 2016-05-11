@@ -164,6 +164,43 @@
     }
   },
   {
+    "type": "delete",
+    "url": "/comments/:id/",
+    "title": "Delete Comment",
+    "group": "Comment",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>ID of Comment</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/endpoints/comments/single.php",
+    "groupTitle": "Comment",
+    "name": "DeleteCommentsId",
+    "sampleRequest": [
+      {
+        "url": "http://api-local.ericwenn.se/comments/:id/"
+      }
+    ],
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response: Unauthorized",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"status\": 401,\n    \"message\": \"Unauthorized Request\"\n}",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
     "type": "get",
     "url": "/posts/:id/comments/",
     "title": "Comments on a Post",
