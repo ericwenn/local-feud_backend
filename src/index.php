@@ -100,6 +100,7 @@
 
     include("endpoints/chats/archive.php");
     include("endpoints/chats/single.php");
+    include("endpoints/chats/single-messages.php");
 
     include("endpoints/users/archive.php");
     include("endpoints/users/single.php");
