@@ -4,6 +4,24 @@ use Pixie\QueryBuilder\QueryBuilderHandler;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+
+/**
+ * @api {get} /chats/[id]/messages/ List chat messages
+ * @apiName ListChatMessages
+ * @apiGroup Chat
+ *
+ * @apiSuccess {Object[]}   messages
+ * @apiSuccess {Number}     messages.id             ID of the message
+ * @apiSuccess {Object[]}   messages.user           The user who sent the message
+ * @apiSuccess {Number}     messages.user.id        id of user
+ * @apiSuccess {Number}     messages.user.fistname  Firstname of user
+ * @apiSuccess {Number}     messages.user.lastname  Lastname of user
+ * @apiSuccess {Date}       messages.timesent       Date when the message was posted
+ *
+ *
+ * @apiUse Unauthorized
+ */
+
 $app->get('/chats/{id}/messages/', function(Request $req, Response $res, $args) {
 
     $chatID = $args['id'];

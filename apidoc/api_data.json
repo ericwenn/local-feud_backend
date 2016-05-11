@@ -1,5 +1,84 @@
 [
   {
+    "type": "get",
+    "url": "/chats/[id]/messages/",
+    "title": "List chat messages",
+    "name": "ListChatMessages",
+    "group": "Chat",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "messages",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "messages.id",
+            "description": "<p>ID of the message</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "messages.user",
+            "description": "<p>The user who sent the message</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "messages.user.id",
+            "description": "<p>id of user</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "messages.user.fistname",
+            "description": "<p>Firstname of user</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "messages.user.lastname",
+            "description": "<p>Lastname of user</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Date",
+            "optional": false,
+            "field": "messages.timesent",
+            "description": "<p>Date when the message was posted</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/endpoints/chats/single-messages.php",
+    "groupTitle": "Chat",
+    "sampleRequest": [
+      {
+        "url": "http://api-local.ericwenn.se/chats/[id]/messages/"
+      }
+    ],
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response: Unauthorized",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"status\": 401,\n    \"message\": \"Unauthorized Request\"\n}",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
     "type": "post",
     "url": "/chats/",
     "title": "List chats",
