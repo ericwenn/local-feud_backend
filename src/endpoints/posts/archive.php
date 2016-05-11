@@ -319,7 +319,6 @@
         /** @var QueryBuilderHandler $qb */
         $qb = $this->querybuilder;
 
-        // TODO Use authenticated users ID instead
         $userID = User::getInstance()->getUserId();
 
 

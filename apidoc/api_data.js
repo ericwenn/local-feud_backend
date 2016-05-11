@@ -104,6 +104,53 @@ define({ "api": [
   },
   {
     "type": "post",
+    "url": "/chats/[id]/messages/",
+    "title": "Send chat messages",
+    "name": "SendChatMessages",
+    "group": "Chat",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": "<p>Message to send</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/endpoints/chats/single-messages.php",
+    "groupTitle": "Chat",
+    "sampleRequest": [
+      {
+        "url": "http://api-local.ericwenn.se/chats/[id]/messages/"
+      }
+    ],
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response: Bad Request",
+          "content": "HTTP/1.1 400 Bad Request\n{\n    \"status\": 400,\n    \"message\": \"Parameters missing or malformed\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response: Not Found",
+          "content": "HTTP/1.1 404 Not Found\n{\n    \"status\": 404,\n    \"message\": \"Resource not found\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response: Unauthorized",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"status\": 401,\n    \"message\": \"Unauthorized Request\"\n}",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "post",
     "url": "/chats/",
     "title": "Start chat with user",
     "name": "StartChat",
@@ -629,37 +676,16 @@ define({ "api": [
           },
           {
             "group": "Success 200",
-            "type": "Object[]",
-            "optional": false,
-            "field": "comments",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
             "type": "Number",
             "optional": false,
-            "field": "comments.number_of_comments",
+            "field": "number_of_comments",
             "description": "<p>Number of Comments on the Post</p>"
           },
           {
             "group": "Success 200",
-            "type": "URL",
-            "optional": false,
-            "field": "comments.href",
-            "description": "<p>Reference to the posts comments</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "Object[]",
-            "optional": false,
-            "field": "likes",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
             "type": "Number",
             "optional": false,
-            "field": "likes.number_of_likes",
+            "field": "number_of_likes",
             "description": "<p>Number of Likes on the Post</p>"
           },
           {

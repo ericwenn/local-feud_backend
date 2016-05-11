@@ -1,6 +1,9 @@
 <?php
+use LocalFeud\Exceptions\BadRequestException;
 use LocalFeud\Exceptions\NotFoundException;
+use LocalFeud\Helpers\User;
 use Pixie\QueryBuilder\QueryBuilderHandler;
+use Respect\Validation\Validator;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
@@ -93,6 +96,75 @@ $app->get('/chats/{id}/messages/', function(Request $req, Response $res, $args) 
     return $newRes;
 });
 
+
+
+
+/**
+ * @api {post} /chats/[id]/messages/ Send chat messages
+ * @apiName SendChatMessages
+ * @apiGroup Chat
+ *
+ * @apiParam {String}   message     Message to send
+ *
+ * @apiUse BadRequest
+ * @apiUse NotFound
+ * @apiUse Unauthorized
+ */
+
+
+$app->post('/chats/{id}/messages/', function(Request $req, Response $res, $args) {
+
+    $chatID = $args['id'];
+
+    /** @var QueryBuilderHandler $qb */
+    $qb = $this->querybuilder;
+
+
+    /**
+     * Check if chat exists
+     */
+    $chat = $qb->table('chats')->where('chatid', '=', $chatID);
+
+    if( $chat->count() == 0) {
+        throw new NotFoundException("Chat doesnt exist");
+    }
+
+
+
+
+    /**
+     * Validate message
+     */
+    $parameters = $req->getParsedBody();
+
+    if( !isset($parameters['message'])) {
+        throw new BadRequestException("Message not set.");
+    }
+
+    $message = $parameters['message'];
+
+
+    if( !Validator::length(1, 3000)->validate($message)) {
+        throw new BadRequestException("Message too long");
+    }
+
+
+    $messagetable = $qb->table('chat_messages');
+
+    $messagetable->insert([
+        'sender' => User::getInstance()->getUserId(),
+        'chatid' => $chatID,
+        'message' => $message
+    ]);
+
+
+    $response = $res->withJson([
+        'status' => 200
+    ]);
+    return $response;
+
+
+});
 
 
 
