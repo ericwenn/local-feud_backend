@@ -189,25 +189,28 @@ $app->post('/chats/', function( Request $request, Response $response, $args) {
     // Check if another chat between these two exists
     $chats = $qb->table('chats');
 
-    $chats->leftJoin( $qb->raw('chat_members as m1'), function( JoinBuilder $table ) use ($qb, $requestedUser) {
+    $chats->join( $qb->raw('chat_members as m1'), function( JoinBuilder $table ) use ($qb, $requestedUser) {
         $table->on('m1.chatid', '=', 'chats.chatid');
         $table->on('m1.userid', '=', $qb->raw($requestedUser));
     });
 
-    $chats->leftJoin( $qb->raw('chat_members as m2'), function( JoinBuilder $table ) use ($qb, $requestedUser, $requestingUser) {
+    $chats->join( $qb->raw('chat_members as m2'), function( JoinBuilder $table ) use ($qb, $requestedUser, $requestingUser) {
         $table->on('m2.chatid', '=', 'chats.chatid');
         $table->on('m2.userid', '=', $qb->raw($requestingUser));
     });
 
     $chats->select([
+        'chats.chatid',
         $qb->raw('m1.userid as firstuser'),
         $qb->raw('m2.userid as seconduser')
     ]);
 
     $chats = $chats->get();
 
+
     // If it does exist, throw badrequest
-    if( $chats[0]->firstuser != null && $chats[0]->seconduser != null) {
+    //if( $chats[0]->firstuser != null && $chats[0]->seconduser != null) {
+    if( sizeof($chats) > 0 ) {
         throw new BadRequestException("Chat between users already exists");
     }
 
