@@ -2,6 +2,30 @@ define({ "api": [
   {
     "type": "post",
     "url": "/chats/",
+    "title": "List chats",
+    "name": "ListChats",
+    "group": "Chat",
+    "version": "0.0.0",
+    "filename": "src/endpoints/chats/archive.php",
+    "groupTitle": "Chat",
+    "sampleRequest": [
+      {
+        "url": "http://api-local.ericwenn.se/chats/"
+      }
+    ],
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response: Unauthorized",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"status\": 401,\n    \"message\": \"Unauthorized Request\"\n}",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "post",
+    "url": "/chats/",
     "title": "Start chat with user",
     "name": "StartChat",
     "group": "Chat",
@@ -870,6 +894,83 @@ define({ "api": [
     "sampleRequest": [
       {
         "url": "http://api-local.ericwenn.se/posts/:id/reports/"
+      }
+    ],
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response: Unauthorized",
+          "content": "HTTP/1.1 401 Unauthorized\n{\n    \"status\": 401,\n    \"message\": \"Unauthorized Request\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response: Not Found",
+          "content": "HTTP/1.1 404 Not Found\n{\n    \"status\": 404,\n    \"message\": \"Resource not found\"\n}",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "get",
+    "url": "/me/",
+    "title": "What about me?",
+    "name": "Me",
+    "group": "User",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "optional": false,
+            "field": "user",
+            "description": "<p>The User</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "user.id",
+            "description": "<p>ID of User</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "user.firstname",
+            "description": "<p>Firstname of User</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "user.lastname",
+            "description": "<p>Lastname of User</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "user.gender",
+            "description": "<p>Gender of User</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "user.age",
+            "description": "<p>Age of User</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "src/endpoints/me/me.php",
+    "groupTitle": "User",
+    "sampleRequest": [
+      {
+        "url": "http://api-local.ericwenn.se/me/"
       }
     ],
     "error": {

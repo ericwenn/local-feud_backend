@@ -1,13 +1,19 @@
 <?php
 
 /**
-* @api {post} /chats/ List chats
-* @apiName ListChats
-* @apiGroup Chat
+* @api {get} /me/ What about me?
+* @apiName Me
+* @apiGroup User
 *
-*
+ * @apiSuccess {Object[]}	user 				The User
+ * @apiSuccess {Number}		user.id    	        ID of User
+ * @apiSuccess {String}	    user.firstname      Firstname of User
+ * @apiSuccess {String}	    user.lastname       Lastname of User
+ * @apiSuccess {String}	    user.gender         Gender of User
+ * @apiSuccess {Number}	    user.age            Age of User
 *
 * @apiUse Unauthorized
+ * @apiUse NotFound
 */
 
 use LocalFeud\Helpers\User;
