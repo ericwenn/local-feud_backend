@@ -104,5 +104,7 @@
     include("endpoints/users/archive.php");
     include("endpoints/users/single.php");
 
+    include("endpoints/me/me.php");
+
 
     $app->run();
