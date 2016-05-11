@@ -9,13 +9,9 @@
  * @apiSuccess {Number}	    reach				            Reach of the Post, measured in kilometers
  * @apiSuccess {Date}		date_posted		                Date when the Post was created
  *
- * @apiSuccess {Object[]}	comments
- * @apiSuccess {Number}	    comments.number_of_comments     Number of Comments on the Post
- * @apiSuccess {URL}	    comments.href                   Reference to the posts comments
+ * @apiSuccess {Number}	    number_of_comments     Number of Comments on the Post
  *
- * @apiSuccess {Object[]}	likes
- * @apiSuccess {Number}	    likes.number_of_likes           Number of Likes on the Post
- * @apiSuccess {URL}	    comments.href                   Reference to the posts likes
+ * @apiSuccess {Number}	    number_of_likes           Number of Likes on the Post
  *
 
  * @apiSuccess {Object[]}	user 			        The User who created the Post
@@ -170,25 +166,17 @@ $app->get('/posts/{id}/', function(\Slim\Http\Request $req, \Slim\Http\Response 
 
 
 
-
-
-    // TODO Data not implemented yet
-    $responseData->comments = [
-        'number_of_comments' => 4,
-        'href' => $this->get('router')->pathFor('postComments', [
-            'id' => $args['id']
-        ])
-    ];
+    // Get number of comments
+    $comments = $qb->table('comments')->where('postid', '=', $responseData->id);
+    $responseData->number_of_comments = $comments->count();
 
 
 
-    // TODO Data not implemented yet
-    $responseData->likes = [
-        'number_of_likes' => 4,
-        'href' => $this->get('router')->pathFor('postLikes', [
-            'id' => $args['id']
-        ])
-    ];
+    // Get number of likes
+    $likes = $qb->table('likes')->where('postid', '=', $responseData->id);
+    $responseData->number_of_likes = $likes->count();
+
+
 
 
 

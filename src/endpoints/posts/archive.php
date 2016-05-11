@@ -74,9 +74,6 @@
 
         $posts = $queryBuilder->table('posts');
 
-        $posts->leftJoin('likes', 'posts.id', '=', 'likes.postid');
-        $posts->leftJoin('comments', 'posts.id', '=', 'comments.postid');
-
 
         $posts->leftJoin( $queryBuilder->raw('likes as l'), function( JoinBuilder $table ) use ($userID, $queryBuilder) {
             $table->on('posts.id', '=', 'l.postid');
@@ -104,8 +101,6 @@
             $queryBuilder->raw('posts.longitude'),
             $queryBuilder->raw('posts.content_type'),
             $queryBuilder->raw('posts.text'),
-            $queryBuilder->raw('count(likes.id) as number_of_likes'),
-            $queryBuilder->raw('count(comments.id) as number_of_comments'),
             $queryBuilder->raw('l.userid as likeuserid'),
             $queryBuilder->raw('post_commentators.firstname as firstname'),
             $queryBuilder->raw('post_commentators.lastname as lastname'),
@@ -179,9 +174,6 @@
 
 
 
-            // TODO Check if user has liked
-            $post->current_user_has_liked = true;
-
 
 
 
@@ -205,6 +197,19 @@
             // Format current_user_has_liked
             $post->current_user_has_liked = !is_null($post->likeuserid);
             unset($post->likeuserid);
+
+
+
+
+            // Get number of comments
+            $comments = $queryBuilder->table('comments')->where('postid', '=', $post->id);
+            $post->number_of_comments = $comments->count();
+
+
+
+            // Get number of likes
+            $likes = $queryBuilder->table('likes')->where('postid', '=', $post->id);
+            $post->number_of_likes = $likes->count();
 
 
         }
