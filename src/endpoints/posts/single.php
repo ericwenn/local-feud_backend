@@ -44,6 +44,7 @@ $app->get('/posts/{id}/', function(\Slim\Http\Request $req, \Slim\Http\Response 
     /** @var \Pixie\QueryBuilder\QueryBuilderHandler $qb */
     $qb = $this->querybuilder;
 
+    
 
 
     $post = $qb->table('posts');

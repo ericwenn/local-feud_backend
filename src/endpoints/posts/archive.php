@@ -57,19 +57,50 @@
     use Slim\Http\Response;
 
     /** @var App $app */
-    $app->get('/posts/', function($req, Response $res, $args ) {
+    $app->get('/posts/', function(Request $request, Response $res, $args ) {
 
         /** @var \Pixie\QueryBuilder\QueryBuilderHandler $queryBuilder */
         $queryBuilder = $this->querybuilder;
 
-        // TODO Get-parameters not added yet. These points *should* be in Gothenburg.
-        $fake_latitude = 52.23123;
-        $fake_longitude = 11.123123;
+
+        $params = $request->getParams();
+
+
+        if( !isset($params['lat'])) {
+            throw new BadRequestException("Latitude (lat) not set");
+        }
+
+        if( !isset($params['lon'])) {
+            throw new BadRequestException("Longitude (lon) not set");
+        }
+
+
+
+        $requestedLatitude = $params['lat'];
+        $requestedLongitude = $params['lon'];
+
+
+        // Calculate a square around the points
+        $distance = 10; // Kilometers (radius)
+        $earthRadius = 40075; // Kilometers
+
+        $deltaLatitude = abs($distance * (360 / $earthRadius));
+
+        $lineOfLon = cos($requestedLatitude) * $earthRadius;
+
+        $deltaLongitude = abs($distance * (360 / $lineOfLon));
+
+
+
+
+
+
+
+
 
         $userID = User::getInstance()->getUserId();
 
 
-        $requestLocation = new Helpers\Location($fake_latitude, $fake_longitude);
 
 
         $posts = $queryBuilder->table('posts');
@@ -105,29 +136,28 @@
             $queryBuilder->raw('post_commentators.firstname as firstname'),
             $queryBuilder->raw('post_commentators.lastname as lastname'),
             $queryBuilder->raw('users.sex'),
-            $queryBuilder->raw('users.birthday'),
-
+            $queryBuilder->raw('users.birthday')
 
         ));
 
-        $posts->groupBy('posts.id');
+        $posts->whereBetween('posts.latitude', $requestedLatitude - $deltaLatitude, $requestedLatitude + $deltaLatitude);
+        $posts->whereBetween('posts.longitude', $requestedLongitude - $deltaLongitude, $requestedLongitude + $deltaLongitude);
+
 
         $posts->orderBy('posts.id', 'DESC');
+        $posts->groupBy('posts.id');
 
-//        echo $posts->getQuery()->getRawSql();
+        //echo $posts->getQuery()->getRawSql();
         $responseData = $posts->get();
 
 
 
         foreach ($responseData as $post) {
 
-            // Calculating distance and formatting this output
-            $post_location = new Helpers\Location($post->latitude, $post->longitude);
-
-            $distance = $post_location->distanceTo($requestLocation);
 
             $post->location = array(
-                'distance' => $distance
+                'longitude' => $post->longitude,
+                'latitude' => $post->latitude
             );
             unset($post->longitude);
             unset($post->latitude);
