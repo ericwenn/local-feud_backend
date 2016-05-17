@@ -91,11 +91,7 @@ $app->get('/chats/', function($req, $res, $args) {
         $last_message = $last_message->get();
 
         if( sizeof($last_message) > 0 ) {
-            $d = new DateTime($last_message[0]->timesent);
-            $chat->last_message = [
-                'message' => $last_message[0]->message,
-                'timesent' => $d->format('c')
-            ];
+            $chat->last_message = $last_message[0]->message;
         } else {
             $chat->last_message = null;
         }
