@@ -158,6 +158,18 @@ $app->post('/chats/{id}/messages/', function(Request $req, Response $res, $args)
     ]);
 
 
+
+
+
+    // Get users in the chat and send gcm to them
+    $users = $qb->table('chat_members')->where('chatid', '=', $chatID)->whereNot('userid', '=', User::getInstance()->getUserId());
+
+    $users->select(['gcm_token']);
+
+    $gcm_tokens = $users->get();
+    print_r($gcm_tokens);
+
+
     $response = $res->withJson([
         'status' => 200
     ]);

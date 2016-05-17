@@ -112,4 +112,6 @@
 
     include("endpoints/comments/single.php");
 
+    include("endpoints/gcm.php");
+
     $app->run();

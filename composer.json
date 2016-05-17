@@ -7,7 +7,8 @@
     "slim/http-cache": "^0.3.0",
     "respect/validation": "2.0.x-dev",
     "nubs/random-name-generator": "v1.0.0",
-    "facebook/php-sdk-v4": "5.1.2"
+    "facebook/php-sdk-v4": "5.1.2",
+    "coreproc/gcm": "0.1.2"
   },
   "autoload": {
     "psr-4": {"LocalFeud\\": "src/"}
