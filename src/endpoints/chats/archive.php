@@ -82,6 +82,20 @@ $app->get('/chats/', function($req, $res, $args) {
 
         $chat->id = $chat->chatid;
         unset( $chat->chatid);
+
+
+
+        // Format last message
+        $last_message = $qb->table('chat_messages')->where('chatid', '=', $chat->id)->orderBy('id', 'DESC')->limit(1);
+        $last_message->select('timesent');
+        $last_message = $last_message->get();
+
+        if( sizeof($last_message) > 0 ) {
+            $d = new DateTime($last_message[0]->timesent);
+            $chat->last_message_sent = $d->format('c');
+        } else {
+            $chat->last_message_sent = null;
+        }
     }
 
 

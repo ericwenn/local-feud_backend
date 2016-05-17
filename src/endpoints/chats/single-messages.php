@@ -1,4 +1,5 @@
 <?php
+use Coreproc\Gcm\Classes\Message;
 use LocalFeud\Exceptions\BadRequestException;
 use LocalFeud\Exceptions\NotFoundException;
 use LocalFeud\Helpers\User;
@@ -163,11 +164,32 @@ $app->post('/chats/{id}/messages/', function(Request $req, Response $res, $args)
 
     // Get users in the chat and send gcm to them
     $users = $qb->table('chat_members')->where('chatid', '=', $chatID)->whereNot('userid', '=', User::getInstance()->getUserId());
+    $users->leftJoin('users', 'chat_members.userid', '=', 'users.id');
 
-    $users->select(['gcm_token']);
+    $users->select(['users.gcm_token']);
 
     $gcm_tokens = $users->get();
-    print_r($gcm_tokens);
+    $registrationIDs = [];
+    foreach($gcm_tokens as $token) {
+        $registrationIDs[] = $token->gcm_token;
+    }
+
+    /** @var Message $message */
+    $message = new Message($this->gcm);
+
+    $message->addRegistrationId($registrationIDs);
+    $message->setData([
+        'title' => 'Test',
+        'message' => $message
+    ]);
+
+
+
+    try {
+        $resp = $message->send();
+    } catch (Exception $e) {
+        throw $e;
+    }
 
 
     $response = $res->withJson([

@@ -1,5 +1,6 @@
 <?php
     namespace LocalFeud;
+    use Coreproc\Gcm\GcmClient;
     use Facebook\Exceptions\FacebookResponseException;
     use Facebook\Facebook;
     use Facebook\FacebookResponse;
@@ -32,6 +33,11 @@
             'default_graph_version' => 'v2.6'
         ]);
         return $fb;
+    };
+
+    $container['gcm'] = function($c) {
+        $gcm = new GcmClient("AIzaSyBLG_YgsDYgVqyfz6JMITgOg6CRmvYtC7k");
+        return $gcm;
     };
 
 
