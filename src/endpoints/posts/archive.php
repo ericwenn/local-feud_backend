@@ -353,12 +353,62 @@
 
 
         $post['authorID'] = $userID;
-        $qb->table('posts')->insert($post);
+        $insertedID = $qb->table('posts')->insert($post);
+
+
+
+        // Return new post json
+        $rpost = [];
+
+        $rpost['id'] = $insertedID;
+
+        $rpost['location'] = [
+            'latitude' => $post['latitude'],
+            'longitude' => $post['longitude']
+        ];
+
+        $d = new DateTime();
+        $rpost['date_posted'] = $d->format('c');
+
+
+        $rpost['content'] = [
+            'type' => 'text',
+            'text' => $post['text']
+        ];
+
+        $rpost['number_of_comments'] = 0;
+        $rpost['number_of_liked'] = 0;
+
+
+        $rpost['current_user_has_liked'] = false;
+
+
+
+
+
+        $user = $qb->table('users')->where('id', '=', User::getInstance()->getUserId());
+        $user = $user->get()[0];
+
+
+
+        NameGenerator::setQB( $qb );
+        list( $firstname, $lastname ) = NameGenerator::generate($rpost['id'], User::getInstance()->getUserId());
+
+
+        $rpost['user'] = [
+            'id' => $user->id,
+            'firstname' => $firstname,
+            'lastname' => $lastname,
+            'gender' => $user->sex,
+            'age' => Age::toAge( $user->birthday )
+        ];
+
+
+
+
 
         return $res->withStatus(200)->withJson(
-            array(
-                'status' => 200
-            )
+            $rpost
         );
 
 
