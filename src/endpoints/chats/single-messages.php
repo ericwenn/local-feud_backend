@@ -166,7 +166,7 @@ $app->post('/chats/{id}/messages/', function(Request $req, Response $res, $args)
     $users = $qb->table('chat_members')->where('chatid', '=', $chatID)->whereNot('userid', '=', User::getInstance()->getUserId());
     $users->leftJoin('users', 'chat_members.userid', '=', 'users.id');
 
-    $users->select(['users.gcm_token']);
+    $users->select(['users.gcm_token', 'users.firstname', 'users.lastname']);
 
     $gcm_tokens = $users->get();
     $registrationIDs = [];
@@ -174,13 +174,23 @@ $app->post('/chats/{id}/messages/', function(Request $req, Response $res, $args)
         $registrationIDs[] = $token->gcm_token;
     }
 
+
+    // Get senders firstname and lastname
+    $sender = $qb->table('users')->where('id', '=', User::getInstance()->getUserId());
+    $sender = $sender->get()[0];
+
+
+    $messageContent = $message;
+
+
     /** @var Message $message */
     $message = new Message($this->gcm);
 
     $message->addRegistrationId($registrationIDs);
     $message->setData([
-        'title' => 'Test',
-        'message' => $message
+        'type' => 'chat_message_recieved',
+        'message' => $messageContent,
+        'from' => $sender->firstname . ' ' . $sender->lastname
     ]);
 
 
