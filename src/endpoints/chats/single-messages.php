@@ -200,7 +200,6 @@ $app->post('/chats/{id}/messages/', function(Request $req, Response $res, $args)
 
     try {
         $resp = $message->send();
-        print_r($resp);
     } catch (Exception $e) {
         throw $e;
     }
