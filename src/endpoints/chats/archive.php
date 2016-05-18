@@ -92,8 +92,11 @@ $app->get('/chats/', function($req, $res, $args) {
 
         if( sizeof($last_message) > 0 ) {
             $chat->last_message = $last_message[0]->message;
+            $d = new DateTime( $last_message[0]->timesent);
+            $chat->last_activity = $d->format('c');
         } else {
             $chat->last_message = null;
+            $chat->last_activity = null;
         }
     }
 
