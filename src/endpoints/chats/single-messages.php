@@ -152,7 +152,7 @@ $app->post('/chats/{id}/messages/', function(Request $req, Response $res, $args)
 
     $messagetable = $qb->table('chat_messages');
 
-    $messagetable->insert([
+    $insertID = $messagetable->insert([
         'sender' => User::getInstance()->getUserId(),
         'chatid' => $chatID,
         'message' => $message
@@ -186,13 +186,23 @@ $app->post('/chats/{id}/messages/', function(Request $req, Response $res, $args)
 
     /** @var Message $message */
     $message = new Message($this->gcm);
-
+    $d = new DateTime();
     $message->addRegistrationId($registrationIDs);
     $message->setData([
         'title' => 'chat_message_recieved',
         'message' => [
             'content' => $messageContent,
-            'from' => $sender->firstname . ' ' . $sender->lastname
+            'from' => $sender->firstname . ' ' . $sender->lastname,
+            'object' => [
+                'id' => $insertID,
+                'user' => [
+                    'id' => User::getInstance()->getUserId(),
+                    'firstname' => $sender->firstname,
+                    'lastname' => $sender->lastname
+                ],
+                'message' => $messageContent,
+                'timesent' => $d->format('c')
+            ]
         ]
     ]);
 
