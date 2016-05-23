@@ -54,6 +54,7 @@ $app->get('/chats/', function($req, $res, $args) {
         $usersInChat->whereNot('chat_members.userid', '=', User::getInstance()->getUserId());
 
         $usersInChat->select([
+            'users.id',
             'users.firstname',
             'users.lastname',
             'users.birthday',
@@ -63,6 +64,7 @@ $app->get('/chats/', function($req, $res, $args) {
         $users = [];
         foreach( $usersInChat->get() as $user ) {
             $users[] = [
+                'id' => $user->id,
                 'firstname' => $user->firstname,
                 'lastname' => $user->lastname,
                 'gender' => $user->sex,
