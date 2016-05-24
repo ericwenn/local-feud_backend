@@ -182,27 +182,31 @@ $app->post('/chats/{id}/messages/', function(Request $req, Response $res, $args)
 
     $messageContent = $message;
 
+    $d = new DateTime();
+
+
+    $messageObject = [
+        'chatid' => $chatID,
+        'id' => $insertID,
+        'user' => [
+            'id' => User::getInstance()->getUserId(),
+            'firstname' => $sender->firstname,
+            'lastname' => $sender->lastname
+        ],
+        'message' => $messageContent,
+        'timesent' => $d->format('c')
+    ];
 
 
     /** @var Message $message */
     $message = new Message($this->gcm);
-    $d = new DateTime();
     $message->addRegistrationId($registrationIDs);
     $message->setData([
         'title' => 'chat_message_recieved',
         'message' => [
             'content' => $messageContent,
             'from' => $sender->firstname . ' ' . $sender->lastname,
-            'object' => [
-                'id' => $insertID,
-                'user' => [
-                    'id' => User::getInstance()->getUserId(),
-                    'firstname' => $sender->firstname,
-                    'lastname' => $sender->lastname
-                ],
-                'message' => $messageContent,
-                'timesent' => $d->format('c')
-            ]
+            'object' => $messageObject,
         ]
     ]);
 
