@@ -98,7 +98,7 @@ $app->get('/chats/{id}/', function($req, $res, $args) {
 
 
     $newRes = $res->withJson(
-        $chats
+        $chats[0]
     );
 
     return $newRes;
