@@ -220,7 +220,7 @@ $app->post('/chats/{id}/messages/', function(Request $req, Response $res, $args)
 
 
     $response = $res->withJson([
-        'status' => 200
+        $messageObject
     ]);
     return $response;
 
